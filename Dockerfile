@@ -1,5 +1,5 @@
 # 构建阶段
-FROM python:3.11-alpine as builder
+FROM python:3.11-alpine AS builder
 
 # 设置工作目录
 WORKDIR /build
@@ -16,13 +16,18 @@ RUN apk add --no-cache \
     gfortran \
     build-base \
     linux-headers \
-    cargo
+    cargo \
+    git \
+    make \
+    cmake \
+    && python -m venv /opt/venv \
+    && . /opt/venv/bin/activate
 
 # 复制依赖文件
 COPY requirements.txt .
 
 # 构建依赖
-RUN pip install --no-cache-dir --upgrade pip \
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
     && pip wheel --no-cache-dir --no-deps --wheel-dir /build/wheels -r requirements.txt
 
 # 运行阶段
@@ -36,7 +41,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     FLASK_APP=app.py \
     FLASK_ENV=production \
-    PORT=5000
+    PORT=5000 \
+    PATH="/opt/venv/bin:$PATH"
 
 # 安装运行时依赖
 RUN apk add --no-cache \
@@ -48,11 +54,13 @@ RUN apk add --no-cache \
     && chown -R appuser:appuser /app \
     && chmod 777 uploads
 
-# 从构建阶段复制构建好的 wheels
+# 从构建阶段复制虚拟环境和构建好的 wheels
+COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /build/wheels /wheels
 
 # 安装 Python 包
-RUN pip install --no-cache-dir /wheels/*
+RUN . /opt/venv/bin/activate \
+    && pip install --no-cache-dir /wheels/*
 
 # 切换到非 root 用户
 USER appuser
