@@ -7,7 +7,8 @@ services:
     level: 1
     dp_service: []
     nameinlog: "lwsmd"
-    description: "Likewise Service Manager Daemon，用于管理身份验证和目录服务"
+    log: ["./likewise/likewise.log"]
+    description: "Likewise Service Manager Daemon"
 
   vmafdd:
     id: 2
@@ -16,7 +17,8 @@ services:
     level: 1
     dp_service: []
     nameinlog: "vmafdd"
-    description: "VMware Authentication Framework Daemon，提供身份验证框架服务"
+    log: ["./vmafdd/vmafdd.log"]
+    description: "VMware Authentication Framework Daemon"
 
   vmdird:
     id: 3
@@ -25,7 +27,8 @@ services:
     level: 1
     dp_service: []
     nameinlog: "vmdird"
-    description: "VMware Directory Service，提供目录服务"
+    log: ["./vmdird/vmdird.log"]
+    description: "VMware Directory Service"
 
   vmcad:
     id: 4
@@ -34,7 +37,8 @@ services:
     level: 1
     dp_service: []
     nameinlog: "vmcad"
-    description: "VMware Certificate Authority Daemon，提供证书管理服务"
+    log: ["./vmcad/vmcad.log"]
+    description: "VMware Certificate Service"
 
   vmware-vmon:
     id: 5
@@ -43,7 +47,8 @@ services:
     level: 1
     dp_service: []
     nameinlog: "vmware-vmon"
-    description: "VMware Service Lifecycle Manager，管理vCenter服务的生命周期"
+    log: ["./vmon/vmon.log"]
+    description: "VMware Service Lifecycle Manager"
     sub_services:
       # Level 2 VMON控制的服务（从6号开始的服务作为子服务）
       envoy:
@@ -53,7 +58,8 @@ services:
         level: 2
         dp_service: []
         nameinlog: "envoy"
-        description: "Envoy Proxy服务，提供服务网格和负载均衡功能"
+        log: ["./envoy/envoy.log"]
+        description: "VMware Envoy Proxy"
         sub_services:
           envoy-sidecar:
             id: 7
@@ -62,7 +68,8 @@ services:
             level: 2
             dp_service: []
             nameinlog: "envoy-sidecar"
-            description: "Envoy边车代理，为微服务提供代理服务"
+            log: ["./envoy-sidecar/envoy.log"]
+            description: "VMware Envoy Proxy-Sidecar"
             sub_services:
               envoy-hgw:
                 id: 8
@@ -71,7 +78,8 @@ services:
                 level: 2
                 dp_service: []
                 nameinlog: "envoy-hgw"
-                description: "Envoy HTTP网关，处理HTTP请求路由"
+                log: ["./envoy-hgw/envoy.log"]
+                description: "VMware Envoy Proxy-HGW"
                 sub_services:
                   rhttpproxy:
                     id: 9
@@ -80,7 +88,8 @@ services:
                     level: 2
                     dp_service: ["vmafdd"]
                     nameinlog: "rhttpproxy"
-                    description: "反向HTTP代理服务，处理vCenter组件间的通信"
+                    log: ["./rhttpproxy/rhttpproxy.log"]
+                    description: "VMware HTTP Reverse Proxy"
                     sub_services:
                       vmware-vpostgres:
                         id: 10
@@ -89,7 +98,8 @@ services:
                         level: 2
                         dp_service: []
                         nameinlog: "vmware-vpostgres"
-                        description: "VMware PostgreSQL数据库服务"
+                         log: ["./vpostgres/postgresql.log"]
+                        description: ""VMware Postgres"
                         sub_services:
                           vtsdb:
                             id: 11
@@ -98,7 +108,8 @@ services:
                             level: 2
                             dp_service: ["vmware-vpostgres"]
                             nameinlog: "vtsdb"
-                            description: "vCenter时序数据库服务"
+                            log: [""]
+                            description: "VMware vTsdb Service"
                             sub_services:
                               vmware-postgres-archiver:
                                 id: 12
@@ -107,7 +118,8 @@ services:
                                 level: 2
                                 dp_service: ["vmware-vpostgres"]
                                 nameinlog: "vmware-postgres-archiver"
-                                description: "PostgreSQL归档服务，用于数据库备份"
+                                log: [""]
+                                description: "VMware Postgres Archiver"
                                 sub_services:
                                   eam:
                                     id: 13
@@ -116,7 +128,8 @@ services:
                                     level: 2
                                     dp_service: []
                                     nameinlog: "eam"
-                                    description: "ESX Agent Manager，管理ESXi主机代理"
+                                    log: ["./eam/eam.log"]
+                                    description: "VMware ESX Agent Manager"
                                     sub_services:
                                       lookupsvc:
                                         id: 14
@@ -125,7 +138,8 @@ services:
                                         level: 2
                                         dp_service: ["rhttpproxy", "vmware-vpostgres"]
                                         nameinlog: "lookupsvc"
-                                        description: "查找服务，提供服务发现功能"
+                                        log: ["./lookupsvc/lookupserver-default.log"]
+                                        description: "VMware Lookup Service"
                                         sub_services:
                                           trustmanagement:
                                             id: 15
@@ -134,7 +148,8 @@ services:
                                             level: 2
                                             dp_service: ["lookupsvc"]
                                             nameinlog: "trustmanagement"
-                                            description: "信任管理服务，处理证书和密钥管理"
+                                            log: ["./trustmanagement/trustmanagement-svcs.log"]
+                                            description: "VMware Trust Management Service"
                                             sub_services:
                                               vc-ws1a-broker:
                                                 id: 16
@@ -143,7 +158,8 @@ services:
                                                 level: 2
                                                 dp_service: ["rhttpproxy", "vmware-vmon", "vmware-vpostgres"]
                                                 nameinlog: "vc-ws1a-broker"
-                                                description: "Workspace ONE Access Broker服务"
+                                                log: ["./vc-ws1a-broker/token-service.log"]
+                                                description: "VMware Workspace One Access (WS1A)"
                                                 sub_services:
                                                   sts:
                                                     id: 17
@@ -152,7 +168,8 @@ services:
                                                     level: 2
                                                     dp_service: ["lookupsvc"]
                                                     nameinlog: "sts"
-                                                    description: "安全令牌服务，提供身份验证和授权"
+                                                    log: ["./sso/vmware-identity-sts.log"]
+                                                    description: "VMware Security Token Service"
                                                     sub_services:
                                                       vpxd:
                                                         id: 18
@@ -161,7 +178,8 @@ services:
                                                         level: 2
                                                         dp_service: ["lookupsvc", "sts", "vmware-vpostgres"]
                                                         nameinlog: "vpxd"
-                                                        description: "vCenter Server守护进程，核心服务管理组件"
+                                                        log: ["./vpxd/vpxd.log"]
+                                                        description: "VMware vCenter Server"
                                                         sub_services:
                                                           sca:
                                                             id: 19
@@ -170,7 +188,8 @@ services:
                                                             level: 2
                                                             dp_service: ["lookupsvc", "rhttpproxy", "sts"]
                                                             nameinlog: "sca"
-                                                            description: "服务控制代理，管理服务生命周期"
+                                                            log: [""]
+                                                            description: "VMware Service Control Agent"
                                                             sub_services:
                                                               vlcm:
                                                                 id: 20
@@ -179,7 +198,8 @@ services:
                                                                 level: 2
                                                                 dp_service: ["lookupsvc", "vmware-vpostgres", "vpxd"]
                                                                 nameinlog: "vlcm"
-                                                                description: "vSphere 生命周期管理器"
+                                                                log: ["./vlcm/vlcm.log"]
+                                                                description: "VMware vCenter Lifecycle API"
                                                                 sub_services:
                                                                   pschealth:
                                                                     id: 21
@@ -188,7 +208,8 @@ services:
                                                                     level: 2
                                                                     dp_service: ["vpxd"]
                                                                     nameinlog: "pschealth"
-                                                                    description: "Platform Services Controller健康监控服务"
+                                                                    log: [""]
+                                                                    description: "VMware Platform Services Controller Health Monitor"
                                                                     sub_services:
                                                                       cis-license:
                                                                         id: 22
@@ -197,7 +218,8 @@ services:
                                                                         level: 2
                                                                         dp_service: ["envoy", "lookupsvc", "sts"]
                                                                         nameinlog: "cis-license"
-                                                                        description: "vCenter许可证服务"
+                                                                        log: ["./cis-license/license.log"]
+                                                                        description: "VMware License Service"
                                                                         sub_services:
                                                                           vapi-endpoint:
                                                                             id: 23
@@ -206,7 +228,8 @@ services:
                                                                             level: 2
                                                                             dp_service: ["envoy", "lookupsvc"]
                                                                             nameinlog: "vapi-endpoint"
-                                                                            description: "vSphere API端点服务"
+                                                                            log: ["./vapi/endpoint/endpoint.log"]
+                                                                            description: "VMware vAPI Endpoint"
                                                                             sub_services:
                                                                               vsan-health:
                                                                                 id: 24
@@ -215,7 +238,8 @@ services:
                                                                                 level: 2
                                                                                 dp_service: ["vmafdd", "vmware-vpostgres", "vpxd"]
                                                                                 nameinlog: "vsan-health"
-                                                                                description: "vSAN健康监控服务"
+                                                                                log: ["./vsan-health/vmware-vsan-health-service.log"]
+                                                                                description: "VMware vSAN Health Service"
                                                                                 sub_services:
                                                                                   vsm:
                                                                                     id: 25
@@ -224,7 +248,8 @@ services:
                                                                                     level: 2
                                                                                     dp_service: ["vpxd"]
                                                                                     nameinlog: "vsm"
-                                                                                    description: "vService Manager，管理vSphere服务"
+                                                                                    log: ["./vsm/vsm.log"]
+                                                                                    description: "VMware vService Manager"
                                                                                     sub_services:
                                                                                       vpxd-svcs:
                                                                                         id: 26
@@ -233,7 +258,8 @@ services:
                                                                                         level: 2
                                                                                         dp_service: ["lookupsvc", "sts", "vmware-vpostgres"]
                                                                                         nameinlog: "vpxd-svcs"
-                                                                                        description: "vCenter Server服务管理器"
+                                                                                        log: ["./vpxd-svcs/vpxd-svcs.log"]
+                                                                                        description: "VMware vCenter-Services"
                                                                                         sub_services:
                                                                                           sps:
                                                                                             id: 27
@@ -242,7 +268,8 @@ services:
                                                                                             level: 2
                                                                                             dp_service: ["lookupsvc"]
                                                                                             nameinlog: "sps"
-                                                                                            description: "Storage Policy Service，存储策略服务"
+                                                                                            log: ["./vmware-sps/sps.log"]
+                                                                                            description: "VMware vSphere Profile-Driven Storage Service"
                                                                                             sub_services:
                                                                                               analytics:
                                                                                                 id: 28
@@ -251,7 +278,8 @@ services:
                                                                                                 level: 2
                                                                                                 dp_service: ["envoy", "lookupsvc", "vmafdd", "vpxd"]
                                                                                                 nameinlog: "analytics"
-                                                                                                description: "vSphere分析服务"
+                                                                                                log: ["./analytics/analytics.log"]
+                                                                                                description: "VMware Analytics Service"
                                                                                                 sub_services:
                                                                                                   vstats:
                                                                                                     id: 29
@@ -260,7 +288,8 @@ services:
                                                                                                     level: 2
                                                                                                     dp_service: ["lookupsvc", "vmware-vpostgres", "vpxd", "vpxd-svcs", "vtsdb"]
                                                                                                     nameinlog: "vstats"
-                                                                                                    description: "vSphere统计信息服务"
+                                                                                                    log: ["./vstats/vstats-telemetry.log"]
+                                                                                                    description: "VMware vStats Service"
                                                                                                     sub_services:
                                                                                                       certificateauthority:
                                                                                                         id: 30
@@ -269,7 +298,8 @@ services:
                                                                                                         level: 2
                                                                                                         dp_service: ["lookupsvc", "sts", "vpxd-svcs"]
                                                                                                         nameinlog: "certificateauthority"
-                                                                                                        description: "证书颁发机构服务"
+                                                                                                        log: ["./certificateauthority/certificateauthority-svcs.log"]
+                                                                                                        description: "VMware Certificate Authority Service"
                                                                                                         sub_services:
                                                                                                           observability-vapi:
                                                                                                             id: 31
@@ -278,7 +308,8 @@ services:
                                                                                                             level: 2
                                                                                                             dp_service: ["lookupsvc", "vpxd-svcs"]
                                                                                                             nameinlog: "observability-vapi"
-                                                                                                            description: "可观测性API服务"
+                                                                                                            log: ["./observability/vapi/observability-vapi.log"]
+                                                                                                            description: "VMware VCSA Observability VAPI Service"
                                                                                                             sub_services:
                                                                                                               certificatemanagement:
                                                                                                                 id: 32
@@ -287,7 +318,8 @@ services:
                                                                                                                 level: 2
                                                                                                                 dp_service: ["lookupsvc", "sts", "vpxd-svcs"]
                                                                                                                 nameinlog: "certificatemanagement"
-                                                                                                                description: "证书管理服务"
+                                                                                                                log: ["./certificatemanagement/certificatemanagement-svcs.log"]
+                                                                                                                description: "VMware Certificate Manager"
                                                                                                                 sub_services:
                                                                                                                   topologysvc:
                                                                                                                     id: 33
@@ -296,7 +328,8 @@ services:
                                                                                                                     level: 2
                                                                                                                     dp_service: ["lookupsvc", "sts", "vpxd-svcs"]
                                                                                                                     nameinlog: "topologysvc"
-                                                                                                                    description: "拓扑服务，管理vSphere基础设施拓扑"
+                                                                                                                    log: ["./topologysvc/topology-svcs.log"]
+                                                                                                                    description: "VMware Topology Service"
                                                                                                                     sub_services:
                                                                                                                       wcp:
                                                                                                                         id: 34
@@ -305,7 +338,8 @@ services:
                                                                                                                         level: 2
                                                                                                                         dp_service: ["cis-license", "eam", "envoy-sidecar", "lookupsvc", "sts", "trustmanagement", "vapi-endpoint", "vmware-vpostgres", "vpxd", "vpxd-svcs"]
                                                                                                                         nameinlog: "wcp"
-                                                                                                                        description: "Workload Control Plane，工作负载控制平面"
+                                                                                                                        log: ["./wcp/wcpsvc.log"]
+                                                                                                                        description: "Workload Control Plane"
                                                                                                                         sub_services:
                                                                                                                           applmgmt:
                                                                                                                             id: 35
@@ -314,7 +348,8 @@ services:
                                                                                                                             level: 2
                                                                                                                             dp_service: ["lookupsvc", "statsmonitor", "vpxd-svcs"]
                                                                                                                             nameinlog: "applmgmt"
-                                                                                                                            description: "设备管理服务"
+                                                                                                                            log: ["./applmgmt/applmgmt.log"]
+                                                                                                                            description: "VMware Appliance Management Service"
                                                                                                                             sub_services:
                                                                                                                               updatemgr:
                                                                                                                                 id: 36
@@ -323,7 +358,8 @@ services:
                                                                                                                                 level: 2
                                                                                                                                 dp_service: ["lookupsvc", "sts", "vpxd", "vpxd-svcs"]
                                                                                                                                 nameinlog: "updatemgr"
-                                                                                                                                description: "更新管理器服务"
+                                                                                                                                log: ["./vmware-updatemgr/vum-server/vmware-vum-server.log"],
+                                                                                                                                description: "VMware Update Manager"
                                                                                                                                 sub_services:
                                                                                                                                   infraprofile:
                                                                                                                                     id: 37
@@ -332,7 +368,8 @@ services:
                                                                                                                                     level: 2
                                                                                                                                     dp_service: ["lookupsvc", "vpxd-svcs"]
                                                                                                                                     nameinlog: "infraprofile"
-                                                                                                                                    description: "基础设施配置文件服务"
+                                                                                                                                    log: ["./infraprofile/infraprofile-svcs.log"]
+                                                                                                                                    description: "VMware Infraprofile Service"
                                                                                                                                     sub_services:
                                                                                                                                       hvc:
                                                                                                                                         id: 38
@@ -341,7 +378,8 @@ services:
                                                                                                                                         level: 2
                                                                                                                                         dp_service: ["certificatemanagement", "lookupsvc", "sts", "trustmanagement", "vapi-endpoint", "vmonapi", "vmware-vpostgres", "vpxd-svcs"]
                                                                                                                                         nameinlog: "hvc"
-                                                                                                                                        description: "Hybrid Version Control，混合版本控制服务"
+                                                                                                                                        log: ["./hvc/hvc-svcs.log"]
+                                                                                                                                        description: "VMware Hybrid VC Service"
                                                                                                                                         sub_services:
                                                                                                                                           vsphere-ui:
                                                                                                                                             id: 39
@@ -350,7 +388,8 @@ services:
                                                                                                                                             level: 2
                                                                                                                                             dp_service: ["envoy", "lookupsvc", "rhttpproxy", "sts", "vapi-endpoint", "vpxd-svcs"]
                                                                                                                                             nameinlog: "vsphere-ui"
-                                                                                                                                            description: "vSphere Web客户端服务"
+                                                                                                                                            log: ["./vsphere-ui/logs/vsphere_client_virgo.log"]
+                                                                                                                                            description: "VMware vSphere Client"
                                                                                                                                             sub_services:
                                                                                                                                               content-library:
                                                                                                                                                 id: 40
@@ -359,7 +398,8 @@ services:
                                                                                                                                                 level: 2
                                                                                                                                                 dp_service: ["rhttpproxy", "sca", "vapi-endpoint", "vmware-vpostgres", "vpxd", "vpxd-svcs", "wcp"]
                                                                                                                                                 nameinlog: "content-library"
-                                                                                                                                                description: "内容库服务，管理vSphere模板和其他内容"
+                                                                                                                                                log: ["./content-library/cls.log"]
+                                                                                                                                                description: "VMware Content Library Service"
                                                                                                                                                 sub_services:
                                                                                                                                                   perfcharts:
                                                                                                                                                     id: 41
@@ -368,7 +408,8 @@ services:
                                                                                                                                                     level: 2
                                                                                                                                                     dp_service: ["sca", "vpxd", "vsphere-ui"]
                                                                                                                                                     nameinlog: "perfcharts"
-                                                                                                                                                    description: "性能图表服务，提供性能监控数据可视化"
+                                                                                                                                                    log: ["./perfcharts/stats.log"]
+                                                                                                                                                    description: "VMware Performance Charts"
 
   # Level 3 系统服务
   observabobservability:
@@ -378,7 +419,8 @@ services:
     level: 3
     dp_service: []
     nameinlog: "observabobservability"
-    description: "可观测性服务，提供系统监控和日志分析"
+    log: ["./observability/observability.log"]
+    description: "VMware VCSA Observability Service"
 
   vmware-vdtc:
     id: 43
@@ -387,7 +429,8 @@ services:
     level: 3
     dp_service: []
     nameinlog: "vmware-vdtc"
-    description: "VMware数据传输服务"
+    log: ["./vdtc/vdtc.log"]
+    description: "VMware vSphere Distrubuted Tracing Collector"
 
   vmware-pod:
     id: 44
@@ -396,4 +439,5 @@ services:
     level: 3
     dp_service: []
     nameinlog: "vmware-pod"
-    description: "VMware Pod服务，管理容器化工作负载" 
+    log: ["./pod/pod-service.log"]
+    description: "VMware Patching and Host Management Service" 
