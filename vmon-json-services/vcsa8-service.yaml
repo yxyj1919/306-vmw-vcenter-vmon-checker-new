@@ -1,0 +1,399 @@
+services:
+  # Level 1 系统基础服务（平级关系）
+  lwsmd:
+    id: 1
+    type: system-control
+    status: running
+    level: 1
+    dp_service: []
+    nameinlog: "lwsmd"
+    description: "Likewise Service Manager Daemon，用于管理身份验证和目录服务"
+
+  vmafdd:
+    id: 2
+    type: system-control
+    status: running
+    level: 1
+    dp_service: []
+    nameinlog: "vmafdd"
+    description: "VMware Authentication Framework Daemon，提供身份验证框架服务"
+
+  vmdird:
+    id: 3
+    type: system-control
+    status: running
+    level: 1
+    dp_service: []
+    nameinlog: "vmdird"
+    description: "VMware Directory Service，提供目录服务"
+
+  vmcad:
+    id: 4
+    type: system-control
+    status: running
+    level: 1
+    dp_service: []
+    nameinlog: "vmcad"
+    description: "VMware Certificate Authority Daemon，提供证书管理服务"
+
+  vmware-vmon:
+    id: 5
+    type: system-control
+    status: running
+    level: 1
+    dp_service: []
+    nameinlog: "vmware-vmon"
+    description: "VMware Service Lifecycle Manager，管理vCenter服务的生命周期"
+    sub_services:
+      # Level 2 VMON控制的服务（从6号开始的服务作为子服务）
+      envoy:
+        id: 6
+        type: vmon-control
+        status: unknown
+        level: 2
+        dp_service: []
+        nameinlog: "envoy"
+        description: "Envoy Proxy服务，提供服务网格和负载均衡功能"
+        sub_services:
+          envoy-sidecar:
+            id: 7
+            type: vmon-control
+            status: unknown
+            level: 2
+            dp_service: []
+            nameinlog: "envoy-sidecar"
+            description: "Envoy边车代理，为微服务提供代理服务"
+            sub_services:
+              envoy-hgw:
+                id: 8
+                type: vmon-control
+                status: unknown
+                level: 2
+                dp_service: []
+                nameinlog: "envoy-hgw"
+                description: "Envoy HTTP网关，处理HTTP请求路由"
+                sub_services:
+                  rhttpproxy:
+                    id: 9
+                    type: vmon-control
+                    status: unknown
+                    level: 2
+                    dp_service: ["vmafdd"]
+                    nameinlog: "rhttpproxy"
+                    description: "反向HTTP代理服务，处理vCenter组件间的通信"
+                    sub_services:
+                      vmware-vpostgres:
+                        id: 10
+                        type: vmon-control
+                        status: unknown
+                        level: 2
+                        dp_service: []
+                        nameinlog: "vmware-vpostgres"
+                        description: "VMware PostgreSQL数据库服务"
+                        sub_services:
+                          vtsdb:
+                            id: 11
+                            type: vmon-control
+                            status: unknown
+                            level: 2
+                            dp_service: ["vmware-vpostgres"]
+                            nameinlog: "vtsdb"
+                            description: "vCenter时序数据库服务"
+                            sub_services:
+                              vmware-postgres-archiver:
+                                id: 12
+                                type: vmon-control
+                                status: unknown
+                                level: 2
+                                dp_service: ["vmware-vpostgres"]
+                                nameinlog: "vmware-postgres-archiver"
+                                description: "PostgreSQL归档服务，用于数据库备份"
+                                sub_services:
+                                  eam:
+                                    id: 13
+                                    type: vmon-control
+                                    status: unknown
+                                    level: 2
+                                    dp_service: []
+                                    nameinlog: "eam"
+                                    description: "ESX Agent Manager，管理ESXi主机代理"
+                                    sub_services:
+                                      lookupsvc:
+                                        id: 14
+                                        type: vmon-control
+                                        status: unknown
+                                        level: 2
+                                        dp_service: ["rhttpproxy", "vmware-vpostgres"]
+                                        nameinlog: "lookupsvc"
+                                        description: "查找服务，提供服务发现功能"
+                                        sub_services:
+                                          trustmanagement:
+                                            id: 15
+                                            type: vmon-control
+                                            status: unknown
+                                            level: 2
+                                            dp_service: ["lookupsvc"]
+                                            nameinlog: "trustmanagement"
+                                            description: "信任管理服务，处理证书和密钥管理"
+                                            sub_services:
+                                              vc-ws1a-broker:
+                                                id: 16
+                                                type: vmon-control
+                                                status: unknown
+                                                level: 2
+                                                dp_service: ["rhttpproxy", "vmware-vmon", "vmware-vpostgres"]
+                                                nameinlog: "vc-ws1a-broker"
+                                                description: "Workspace ONE Access Broker服务"
+                                                sub_services:
+                                                  sts:
+                                                    id: 17
+                                                    type: vmon-control
+                                                    status: unknown
+                                                    level: 2
+                                                    dp_service: ["lookupsvc"]
+                                                    nameinlog: "sts"
+                                                    description: "安全令牌服务，提供身份验证和授权"
+                                                    sub_services:
+                                                      vpxd:
+                                                        id: 18
+                                                        type: vmon-control
+                                                        status: unknown
+                                                        level: 2
+                                                        dp_service: ["lookupsvc", "sts", "vmware-vpostgres"]
+                                                        nameinlog: "vpxd"
+                                                        description: "vCenter Server守护进程，核心服务管理组件"
+                                                        sub_services:
+                                                          sca:
+                                                            id: 19
+                                                            type: vmon-control
+                                                            status: unknown
+                                                            level: 2
+                                                            dp_service: ["lookupsvc", "rhttpproxy", "sts"]
+                                                            nameinlog: "sca"
+                                                            description: "服务控制代理，管理服务生命周期"
+                                                            sub_services:
+                                                              vlcm:
+                                                                id: 20
+                                                                type: vmon-control
+                                                                status: unknown
+                                                                level: 2
+                                                                dp_service: ["lookupsvc", "vmware-vpostgres", "vpxd"]
+                                                                nameinlog: "vlcm"
+                                                                description: "vSphere 生命周期管理器"
+                                                                sub_services:
+                                                                  pschealth:
+                                                                    id: 21
+                                                                    type: vmon-control
+                                                                    status: unknown
+                                                                    level: 2
+                                                                    dp_service: ["vpxd"]
+                                                                    nameinlog: "pschealth"
+                                                                    description: "Platform Services Controller健康监控服务"
+                                                                    sub_services:
+                                                                      cis-license:
+                                                                        id: 22
+                                                                        type: vmon-control
+                                                                        status: unknown
+                                                                        level: 2
+                                                                        dp_service: ["envoy", "lookupsvc", "sts"]
+                                                                        nameinlog: "cis-license"
+                                                                        description: "vCenter许可证服务"
+                                                                        sub_services:
+                                                                          vapi-endpoint:
+                                                                            id: 23
+                                                                            type: vmon-control
+                                                                            status: unknown
+                                                                            level: 2
+                                                                            dp_service: ["envoy", "lookupsvc"]
+                                                                            nameinlog: "vapi-endpoint"
+                                                                            description: "vSphere API端点服务"
+                                                                            sub_services:
+                                                                              vsan-health:
+                                                                                id: 24
+                                                                                type: vmon-control
+                                                                                status: unknown
+                                                                                level: 2
+                                                                                dp_service: ["vmafdd", "vmware-vpostgres", "vpxd"]
+                                                                                nameinlog: "vsan-health"
+                                                                                description: "vSAN健康监控服务"
+                                                                                sub_services:
+                                                                                  vsm:
+                                                                                    id: 25
+                                                                                    type: vmon-control
+                                                                                    status: unknown
+                                                                                    level: 2
+                                                                                    dp_service: ["vpxd"]
+                                                                                    nameinlog: "vsm"
+                                                                                    description: "vService Manager，管理vSphere服务"
+                                                                                    sub_services:
+                                                                                      vpxd-svcs:
+                                                                                        id: 26
+                                                                                        type: vmon-control
+                                                                                        status: unknown
+                                                                                        level: 2
+                                                                                        dp_service: ["lookupsvc", "sts", "vmware-vpostgres"]
+                                                                                        nameinlog: "vpxd-svcs"
+                                                                                        description: "vCenter Server服务管理器"
+                                                                                        sub_services:
+                                                                                          sps:
+                                                                                            id: 27
+                                                                                            type: vmon-control
+                                                                                            status: unknown
+                                                                                            level: 2
+                                                                                            dp_service: ["lookupsvc"]
+                                                                                            nameinlog: "sps"
+                                                                                            description: "Storage Policy Service，存储策略服务"
+                                                                                            sub_services:
+                                                                                              analytics:
+                                                                                                id: 28
+                                                                                                type: vmon-control
+                                                                                                status: unknown
+                                                                                                level: 2
+                                                                                                dp_service: ["envoy", "lookupsvc", "vmafdd", "vpxd"]
+                                                                                                nameinlog: "analytics"
+                                                                                                description: "vSphere分析服务"
+                                                                                                sub_services:
+                                                                                                  vstats:
+                                                                                                    id: 29
+                                                                                                    type: vmon-control
+                                                                                                    status: unknown
+                                                                                                    level: 2
+                                                                                                    dp_service: ["lookupsvc", "vmware-vpostgres", "vpxd", "vpxd-svcs", "vtsdb"]
+                                                                                                    nameinlog: "vstats"
+                                                                                                    description: "vSphere统计信息服务"
+                                                                                                    sub_services:
+                                                                                                      certificateauthority:
+                                                                                                        id: 30
+                                                                                                        type: vmon-control
+                                                                                                        status: unknown
+                                                                                                        level: 2
+                                                                                                        dp_service: ["lookupsvc", "sts", "vpxd-svcs"]
+                                                                                                        nameinlog: "certificateauthority"
+                                                                                                        description: "证书颁发机构服务"
+                                                                                                        sub_services:
+                                                                                                          observability-vapi:
+                                                                                                            id: 31
+                                                                                                            type: vmon-control
+                                                                                                            status: unknown
+                                                                                                            level: 2
+                                                                                                            dp_service: ["lookupsvc", "vpxd-svcs"]
+                                                                                                            nameinlog: "observability-vapi"
+                                                                                                            description: "可观测性API服务"
+                                                                                                            sub_services:
+                                                                                                              certificatemanagement:
+                                                                                                                id: 32
+                                                                                                                type: vmon-control
+                                                                                                                status: unknown
+                                                                                                                level: 2
+                                                                                                                dp_service: ["lookupsvc", "sts", "vpxd-svcs"]
+                                                                                                                nameinlog: "certificatemanagement"
+                                                                                                                description: "证书管理服务"
+                                                                                                                sub_services:
+                                                                                                                  topologysvc:
+                                                                                                                    id: 33
+                                                                                                                    type: vmon-control
+                                                                                                                    status: unknown
+                                                                                                                    level: 2
+                                                                                                                    dp_service: ["lookupsvc", "sts", "vpxd-svcs"]
+                                                                                                                    nameinlog: "topologysvc"
+                                                                                                                    description: "拓扑服务，管理vSphere基础设施拓扑"
+                                                                                                                    sub_services:
+                                                                                                                      wcp:
+                                                                                                                        id: 34
+                                                                                                                        type: vmon-control
+                                                                                                                        status: unknown
+                                                                                                                        level: 2
+                                                                                                                        dp_service: ["cis-license", "eam", "envoy-sidecar", "lookupsvc", "sts", "trustmanagement", "vapi-endpoint", "vmware-vpostgres", "vpxd", "vpxd-svcs"]
+                                                                                                                        nameinlog: "wcp"
+                                                                                                                        description: "Workload Control Plane，工作负载控制平面"
+                                                                                                                        sub_services:
+                                                                                                                          applmgmt:
+                                                                                                                            id: 35
+                                                                                                                            type: vmon-control
+                                                                                                                            status: unknown
+                                                                                                                            level: 2
+                                                                                                                            dp_service: ["lookupsvc", "statsmonitor", "vpxd-svcs"]
+                                                                                                                            nameinlog: "applmgmt"
+                                                                                                                            description: "设备管理服务"
+                                                                                                                            sub_services:
+                                                                                                                              updatemgr:
+                                                                                                                                id: 36
+                                                                                                                                type: vmon-control
+                                                                                                                                status: unknown
+                                                                                                                                level: 2
+                                                                                                                                dp_service: ["lookupsvc", "sts", "vpxd", "vpxd-svcs"]
+                                                                                                                                nameinlog: "updatemgr"
+                                                                                                                                description: "更新管理器服务"
+                                                                                                                                sub_services:
+                                                                                                                                  infraprofile:
+                                                                                                                                    id: 37
+                                                                                                                                    type: vmon-control
+                                                                                                                                    status: unknown
+                                                                                                                                    level: 2
+                                                                                                                                    dp_service: ["lookupsvc", "vpxd-svcs"]
+                                                                                                                                    nameinlog: "infraprofile"
+                                                                                                                                    description: "基础设施配置文件服务"
+                                                                                                                                    sub_services:
+                                                                                                                                      hvc:
+                                                                                                                                        id: 38
+                                                                                                                                        type: vmon-control
+                                                                                                                                        status: unknown
+                                                                                                                                        level: 2
+                                                                                                                                        dp_service: ["certificatemanagement", "lookupsvc", "sts", "trustmanagement", "vapi-endpoint", "vmonapi", "vmware-vpostgres", "vpxd-svcs"]
+                                                                                                                                        nameinlog: "hvc"
+                                                                                                                                        description: "Hybrid Version Control，混合版本控制服务"
+                                                                                                                                        sub_services:
+                                                                                                                                          vsphere-ui:
+                                                                                                                                            id: 39
+                                                                                                                                            type: vmon-control
+                                                                                                                                            status: unknown
+                                                                                                                                            level: 2
+                                                                                                                                            dp_service: ["envoy", "lookupsvc", "rhttpproxy", "sts", "vapi-endpoint", "vpxd-svcs"]
+                                                                                                                                            nameinlog: "vsphere-ui"
+                                                                                                                                            description: "vSphere Web客户端服务"
+                                                                                                                                            sub_services:
+                                                                                                                                              content-library:
+                                                                                                                                                id: 40
+                                                                                                                                                type: vmon-control
+                                                                                                                                                status: unknown
+                                                                                                                                                level: 2
+                                                                                                                                                dp_service: ["rhttpproxy", "sca", "vapi-endpoint", "vmware-vpostgres", "vpxd", "vpxd-svcs", "wcp"]
+                                                                                                                                                nameinlog: "content-library"
+                                                                                                                                                description: "内容库服务，管理vSphere模板和其他内容"
+                                                                                                                                                sub_services:
+                                                                                                                                                  perfcharts:
+                                                                                                                                                    id: 41
+                                                                                                                                                    type: vmon-control
+                                                                                                                                                    status: unknown
+                                                                                                                                                    level: 2
+                                                                                                                                                    dp_service: ["sca", "vpxd", "vsphere-ui"]
+                                                                                                                                                    nameinlog: "perfcharts"
+                                                                                                                                                    description: "性能图表服务，提供性能监控数据可视化"
+
+  # Level 3 系统服务
+  observabobservability:
+    id: 42
+    type: system-control
+    status: unknown
+    level: 3
+    dp_service: []
+    nameinlog: "observabobservability"
+    description: "可观测性服务，提供系统监控和日志分析"
+
+  vmware-vdtc:
+    id: 43
+    type: system-control
+    status: unknown
+    level: 3
+    dp_service: []
+    nameinlog: "vmware-vdtc"
+    description: "VMware数据传输服务"
+
+  vmware-pod:
+    id: 44
+    type: system-control
+    status: unknown
+    level: 3
+    dp_service: []
+    nameinlog: "vmware-pod"
+    description: "VMware Pod服务，管理容器化工作负载" 
