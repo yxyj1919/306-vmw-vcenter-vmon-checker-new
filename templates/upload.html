@@ -11,17 +11,20 @@
         }
         
         body {
-            background-color: #f5f5f5;
+            background-color: #f0f2f5;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
         
         .navbar {
-            background-color: #2c3e50;
+            background-color: #1a365d;
             color: white;
             padding: 1rem 2rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .navbar h1 {
@@ -29,294 +32,514 @@
             font-weight: 500;
         }
         
-        .container {
-            max-width: 800px;
+        .version-badge {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .main-container {
+            max-width: 1000px;
             margin: 2rem auto;
-            padding: 2rem;
+            padding: 0 1rem;
+            display: flex;
+            gap: 2rem;
+            flex: 1;
+        }
+        
+        .upload-container {
+            flex: 1;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         
-        .upload-section {
-            margin-bottom: 1rem;
-            padding: 1rem;
-            border: 2px dashed #ddd;
-            border-radius: 8px;
-            text-align: center;
-            max-width: 400px;
-            margin: 0 auto;
+        .help-button {
+            background: none;
+            border: 1px solid #e5e7eb;
+            color: #4b5563;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.2s ease;
         }
         
-        .upload-section.drag-over {
-            border-color: #3498db;
-            background-color: rgba(52, 152, 219, 0.1);
+        .help-button:hover {
+            background-color: #f9fafb;
+            border-color: #d1d5db;
         }
         
         .version-select {
-            margin-bottom: 1.5rem;
-            text-align: left;
+            margin-bottom: 2rem;
+        }
+        
+        .version-select h3 {
+            font-size: 1rem;
+            color: #374151;
+            margin-bottom: 0.75rem;
         }
         
         .version-select select {
             width: 100%;
-            padding: 0.5rem;
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
             font-size: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            color: #374151;
             background-color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .version-select select:hover {
+            border-color: #d1d5db;
+        }
+        
+        .version-select select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
         
         .upload-methods {
             display: flex;
             gap: 1rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e5e7eb;
         }
         
         .method-tab {
-            flex: 1;
-            padding: 0.5rem;
-            text-align: center;
+            padding: 0.75rem 1.5rem;
             cursor: pointer;
+            font-size: 0.95rem;
+            color: #6b7280;
             border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .method-tab:hover {
+            color: #3b82f6;
         }
         
         .method-tab.active {
-            border-bottom-color: #3498db;
-            color: #3498db;
+            color: #3b82f6;
+            border-bottom: 2px solid #3b82f6;
+            font-weight: 500;
         }
         
         .upload-content {
-            margin-top: 1.5rem;
+            margin-top: 1rem;
+            min-height: 200px;
+            display: flex;
         }
         
-        .remote-url {
-            width: 100%;
-            padding: 0.5rem;
-            margin-bottom: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
+        .upload-section {
+            border: 2px dashed #e5e7eb;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.2s ease;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        .btn {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            font-weight: 500;
-            color: white;
-            background-color: #3498db;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+        .upload-section.drag-over {
+            border-color: #3b82f6;
+            background-color: rgba(59, 130, 246, 0.05);
         }
         
-        .btn:hover {
-            background-color: #2980b9;
-        }
-        
-        .file-input {
-            display: none;
+        .upload-flex {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
         }
         
         .upload-icon {
-            font-size: 1.2rem;
-            color: #3498db;
+            font-size: 2.5rem;
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
         }
         
         .upload-text {
-            margin: 0;
-            color: #666;
-            font-size: 0.9rem;
+            color: #4b5563;
+            font-size: 1rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
         
-        .error-message {
-            color: #e74c3c;
-            margin-top: 1rem;
-            display: none;
-        }
-        
-        .instruction-panel {
-            background-color: #f8fafc;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            width: 100%;
-        }
-        
-        .instruction-panel h2 {
-            color: #1e293b;
-            font-size: 1.2rem;
-            margin-bottom: 16px;
-            font-weight: 600;
-        }
-        
-        .toggle-btn {
-            padding: 4px 8px;
-            font-size: 0.9rem;
-            background: #e2e8f0;
-            border: none;
-            border-radius: 4px;
+        .btn-link {
+            color: #3b82f6;
+            text-decoration: none;
             cursor: pointer;
         }
         
+        .btn-link:hover {
+            text-decoration: underline;
+        }
+        
+        .file-hint {
+            color: #9ca3af;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        
+        .remote-url {
+            width: 100%;
+            max-width: 400px;
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .remote-url:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: white;
+            background-color: #3b82f6;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn:hover {
+            background-color: #2563eb;
+        }
+        
+        .error-message {
+            color: #ef4444;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 6px;
+            background-color: #fef2f2;
+            border: 1px solid #fee2e2;
+            display: none;
+        }
+        
+        .footer {
+            margin-top: auto;
+            padding: 1.5rem;
+            background-color: white;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+        
+        .footer a {
+            color: #4b5563;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+        
+        .footer a:hover {
+            color: #3b82f6;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 2.5rem;
+            border-radius: 16px;
+            width: 95%;
+            max-width: 1200px;
+            position: relative;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a365d;
+            flex: 1;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .modal-close:hover {
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        
+        .instruction-panel {
+            background: none;
+            padding: 0;
+        }
+        
+        .instruction-panel h2 {
+            display: none;
+        }
+        
         .step-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 100%;
         }
         
         .step {
-            background-color: white;
-            border-radius: 6px;
-            padding: 16px;
+            background-color: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
             border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
             width: 100%;
         }
         
+        .step:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
         .step h3 {
-            color: #334155;
-            font-size: 1rem;
-            margin-bottom: 12px;
-            font-weight: 500;
+            color: #1a365d;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .step h3::before {
+            content: '';
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background-color: #3b82f6;
+            border-radius: 50%;
+            color: white;
+            font-size: 0.9rem;
+            flex-shrink: 0;
         }
         
         .command {
             background-color: #1e293b;
             color: #e2e8f0;
-            padding: 12px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            margin: 8px 0;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+            padding: 1.25rem;
+            border-radius: 8px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
             overflow-x: auto;
-            max-width: 100%;
+            position: relative;
+            white-space: pre-wrap;
+            word-break: break-all;
         }
         
-        .upload-flex {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 12px;
-            min-height: 60px;
-        }
-        
-        .inline-form {
-            display: inline;
-        }
-        
-        .btn-link {
-            background: none;
-            border: none;
-            color: #3498db;
-            padding: 0;
-            font: inherit;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-        
-        .file-hint {
-            color: #999;
-            font-size: 0.8rem;
+        .command::before {
+            content: '$';
+            color: #94a3b8;
+            margin-right: 1rem;
+            user-select: none;
         }
         
         .command-note {
-            color: #666;
-            font-size: 0.8rem;
-            margin-top: 8px;
-            display: block;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            padding-left: 1rem;
+            border-left: 3px solid #e2e8f0;
             font-style: italic;
+        }
+        
+        #remote-upload {
+            display: none;
+        }
+        
+        #remote-upload form {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            border: 2px dashed #e5e7eb;
+            border-radius: 8px;
+            background-color: white;
+            gap: 1rem;
         }
     </style>
 </head>
 <body>
     <div class="navbar">
         <h1>vCenter vMon Service Checker</h1>
+        <div class="version-badge">
+            <span>v1.0.0</span>
+            <span style="opacity: 0.7;">|</span>
+            <span>vCenter 8.0 U3</span>
+        </div>
     </div>
     
-    <div class="container">
-        <h1>vCenter vMon Service Checker</h1>
-        
-        <div class="instruction-panel">
-            <h2>使用前准备工作</h2>
-            <div class="steps" id="instruction-steps">
+    <div class="main-container">
+        <div class="upload-container">
+            <button class="help-button" onclick="openModal()">
+                <span>ℹ️</span> View Prerequisites and Instructions
+            </button>
+            
+            <div class="version-select">
+                <h3>Select vCenter Version</h3>
+                <select id="vcenter-version" name="version">
+                    <option value="7.0">vCenter 7.0</option>
+                    <option value="8.0U1">vCenter 8.0 U1</option>
+                    <option value="8.0U2">vCenter 8.0 U2</option>
+                    <option value="8.0U3" selected>vCenter 8.0 U3</option>
+                </select>
+            </div>
+            
+            <div class="upload-methods">
+                <div class="method-tab active" onclick="switchMethod('local')">Local Upload</div>
+                <div class="method-tab" onclick="switchMethod('remote')">Remote Download</div>
+            </div>
+            
+            <div id="local-upload" class="upload-content">
+                <div class="upload-section" id="drop-zone">
+                    <div class="upload-flex">
+                        <div class="upload-icon">📁</div>
+                        <div class="upload-text">
+                            Drag and drop file here or
+                            <form id="upload-form" action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data" style="display: inline;">
+                                <input type="hidden" name="version" id="version-input">
+                                <input type="file" name="file" id="file-input" style="display: none;" accept=".log">
+                                <button type="button" class="btn-link" onclick="document.getElementById('file-input').click()">choose file</button>
+                            </form>
+                        </div>
+                        <div class="file-hint">(.log files supported)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="remote-upload" class="upload-content">
+                <form id="remote-form" action="{{ url_for('download_file') }}" method="post">
+                    <input type="hidden" name="version" id="remote-version-input">
+                    <div class="upload-icon">🌐</div>
+                    <input type="text" name="url" class="remote-url" placeholder="Enter remote file URL" required>
+                    <button type="submit" class="btn">Download and Analyze</button>
+                </form>
+            </div>
+            
+            <div class="error-message" id="error-message"></div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <div class="footer-links">
+            <a href="mailto:chang.wang@broadcom.com">
+                <span>🐛 Bug Report: chang.wang@broadcom.com</span>
+            </a>
+            <a href="https://github.com/yxyj1919/306-vmw-vcenter-vmon-checker-new" target="_blank">
+                <span>📦 GitHub Repository</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Prerequisites Modal -->
+    <div id="prerequisitesModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Prerequisites and Instructions</div>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="instruction-panel">
                 <div class="step-grid">
                     <div class="step">
-                        <h3>1. SSH登录 vCenter</h3>
+                        <h3><span style="color: white; width: 28px; height: 28px; background-color: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center;">1</span>SSH Login to vCenter</h3>
                         <pre class="command">ssh root@vcenter-ip</pre>
                     </div>
                     
                     <div class="step">
-                        <h3>2. 重启所有服务</h3>
+                        <h3><span style="color: white; width: 28px; height: 28px; background-color: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center;">2</span>Restart All Services</h3>
                         <pre class="command">service-control --stop --all && service-control --start --all</pre>
                     </div>
                     
                     <div class="step">
-                        <h3>3. 获取日志文件</h3>
+                        <h3><span style="color: white; width: 28px; height: 28px; background-color: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center;">3</span>Get Log File</h3>
                         <pre class="command">cp /var/log/vmware/vmon/vmon.log /tmp/ && cd /tmp/ && tar -czf vmon-logs.tar.gz vmon.log</pre>
-                        <small class="command-note">* 将生成的 vmon-logs.tar.gz 下载到本地后上传</small>
+                        <div class="command-note">Download vmon-logs.tar.gz to local and upload</div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="version-select">
-            <h3>选择vCenter版本</h3>
-            <select id="vcenter-version" name="version">
-                <option value="7.0">vCenter 7.0</option>
-                <option value="8.0U1">vCenter 8.0 U1</option>
-                <option value="8.0U2">vCenter 8.0 U2</option>
-                <option value="8.0U3" selected>vCenter 8.0 U3</option>
-            </select>
-        </div>
-        
-        <div class="upload-methods">
-            <div class="method-tab active" onclick="switchMethod('local')">本地上传</div>
-            <div class="method-tab" onclick="switchMethod('remote')">远程下载</div>
-        </div>
-        
-        <div id="local-upload" class="upload-content">
-            <div class="upload-section" id="drop-zone">
-                <div class="upload-flex">
-                    <div class="upload-icon">📁</div>
-                    <div class="upload-text">
-                        拖拽文件到此处或
-                        <form id="upload-form" action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data" class="inline-form">
-                            <input type="hidden" name="version" id="version-input">
-                            <input type="file" name="file" id="file-input" class="file-input" accept=".log">
-                            <button type="button" class="btn-link" onclick="document.getElementById('file-input').click()">选择文件</button>
-                        </form>
-                        <small class="file-hint">(支持.log文件)</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div id="remote-upload" class="upload-content" style="display: none;">
-            <form id="remote-form" action="{{ url_for('download_file') }}" method="post">
-                <input type="hidden" name="version" id="remote-version-input">
-                <input type="text" name="url" class="remote-url" placeholder="输入远程文件URL" required>
-                <button type="submit" class="btn">下载并分析</button>
-            </form>
-        </div>
-        
-        <div class="error-message" id="error-message"></div>
     </div>
-
+    
     <script>
-        // 版本选择处理
+        // Version selection handling
         const versionSelect = document.getElementById('vcenter-version');
         const versionInput = document.getElementById('version-input');
         const remoteVersionInput = document.getElementById('remote-version-input');
         
-        // 设置默认版本为8.0U3
+        // Show Prerequisites modal automatically when page loads
+        window.addEventListener('load', function() {
+            openModal();
+        });
+        
         versionSelect.value = '8.0U3';
         versionInput.value = '8.0U3';
         remoteVersionInput.value = '8.0U3';
@@ -326,7 +549,7 @@
             remoteVersionInput.value = this.value;
         });
         
-        // 切换上传方式
+        // Upload method switching
         function switchMethod(method) {
             const localUpload = document.getElementById('local-upload');
             const remoteUpload = document.getElementById('remote-upload');
@@ -345,7 +568,7 @@
             }
         }
         
-        // 文件拖放处理
+        // File drag and drop handling
         const dropZone = document.getElementById('drop-zone');
         const fileInput = document.getElementById('file-input');
         const uploadForm = document.getElementById('upload-form');
@@ -372,7 +595,7 @@
                     fileInput.files = files;
                     uploadForm.submit();
                 } else {
-                    showError('请上传.log文件');
+                    showError('Please upload a .log file');
                 }
             }
         });
@@ -391,9 +614,20 @@
             }, 3000);
         }
         
-        function toggleInstructions() {
-            const steps = document.getElementById('instruction-steps');
-            steps.style.display = steps.style.display === 'none' ? 'block' : 'none';
+        // Modal functions
+        function openModal() {
+            document.getElementById('prerequisitesModal').style.display = 'block';
+        }
+        
+        function closeModal() {
+            document.getElementById('prerequisitesModal').style.display = 'none';
+        }
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('prerequisitesModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
         }
     </script>
 </body>
