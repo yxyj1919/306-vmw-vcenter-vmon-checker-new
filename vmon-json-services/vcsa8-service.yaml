@@ -1,443 +1,442 @@
 services:
   # Level 1 系统基础服务（平级关系）
   lwsmd:
+    description: "VMware Likewise Service Manager Daemon"
     id: 1
+    nameinlog: "lwsmd"
+    level: 1
     type: system-control
     status: running
-    level: 1
-    dp_service: []
-    nameinlog: "lwsmd"
     log: ["./likewise/likewise.log"]
-    description: "Likewise Service Manager Daemon"
+    dp_service: []
 
   vmafdd:
+    description: "VMware Authentication Framework Daemon"
     id: 2
+    nameinlog: "vmafdd"
+    level: 1
     type: system-control
     status: running
-    level: 1
-    dp_service: []
-    nameinlog: "vmafdd"
     log: ["./vmafdd/vmafdd.log"]
-    description: "VMware Authentication Framework Daemon"
+    dp_service: []
 
   vmdird:
+    description: "VMware Directory Service"
     id: 3
+    nameinlog: "vmdird"
+    level: 1
     type: system-control
     status: running
-    level: 1
-    dp_service: []
-    nameinlog: "vmdird"
     log: ["./vmdird/vmdird.log"]
-    description: "VMware Directory Service"
+    dp_service: []
 
   vmcad:
+    description: "VMware Certificate Service"
     id: 4
+    nameinlog: "vmcad"
+    level: 1
     type: system-control
     status: running
-    level: 1
-    dp_service: []
-    nameinlog: "vmcad"
     log: ["./vmcad/vmcad.log"]
-    description: "VMware Certificate Service"
+    dp_service: []
 
   vmware-vmon:
+    description: "VMware Service Lifecycle Manager"
     id: 5
+    nameinlog: "vmware-vmon"
+    level: 1
     type: system-control
     status: running
-    level: 1
-    dp_service: []
-    nameinlog: "vmware-vmon"
     log: ["./vmon/vmon.log"]
-    description: "VMware Service Lifecycle Manager"
+    dp_service: []
     sub_services:
-      # Level 2 VMON控制的服务（从6号开始的服务作为子服务）
       envoy:
+        description: "VMware Envoy Proxy"
         id: 6
+        nameinlog: "envoy"
+        level: 2
         type: vmon-control
         status: unknown
-        level: 2
-        dp_service: []
-        nameinlog: "envoy"
         log: ["./envoy/envoy.log"]
-        description: "VMware Envoy Proxy"
+        dp_service: []
         sub_services:
           envoy-sidecar:
+            description: "VMware Envoy Proxy-Sidecar"
             id: 7
+            nameinlog: "envoy-sidecar"
+            level: 2
             type: vmon-control
             status: unknown
-            level: 2
-            dp_service: []
-            nameinlog: "envoy-sidecar"
             log: ["./envoy-sidecar/envoy.log"]
-            description: "VMware Envoy Proxy-Sidecar"
+            dp_service: []
             sub_services:
               envoy-hgw:
+                description: "VMware Envoy HTTP Gateway"
                 id: 8
+                nameinlog: "envoy-hgw"
+                level: 2
                 type: vmon-control
                 status: unknown
-                level: 2
-                dp_service: []
-                nameinlog: "envoy-hgw"
                 log: ["./envoy-hgw/envoy.log"]
-                description: "VMware Envoy Proxy-HGW"
+                dp_service: []
                 sub_services:
                   rhttpproxy:
+                    description: "VMware Reverse HTTP Proxy"
                     id: 9
+                    nameinlog: "rhttpproxy"
+                    level: 2
                     type: vmon-control
                     status: unknown
-                    level: 2
-                    dp_service: ["vmafdd"]
-                    nameinlog: "rhttpproxy"
                     log: ["./rhttpproxy/rhttpproxy.log"]
-                    description: "VMware HTTP Reverse Proxy"
+                    dp_service: ["vmafdd"]
                     sub_services:
                       vmware-vpostgres:
+                        description: "VMware PostgreSQL Database Service"
                         id: 10
+                        nameinlog: "vmware-vpostgres"
+                        level: 2
                         type: vmon-control
                         status: unknown
-                        level: 2
+                        log: ["./vpostgres/postgresql.log"]
                         dp_service: []
-                        nameinlog: "vmware-vpostgres"
-                         log: ["./vpostgres/postgresql.log"]
-                        description: ""VMware Postgres"
                         sub_services:
                           vtsdb:
+                            description: "VMware Time Series Database Service"
                             id: 11
+                            nameinlog: "vtsdb"
+                            level: 2
                             type: vmon-control
                             status: unknown
-                            level: 2
+                            log: ["./vtsdb/vtsdb.log"]
                             dp_service: ["vmware-vpostgres"]
-                            nameinlog: "vtsdb"
-                            log: [""]
-                            description: "VMware vTsdb Service"
                             sub_services:
                               vmware-postgres-archiver:
+                                description: "VMware PostgreSQL Archiver Service"
                                 id: 12
+                                nameinlog: "vmware-postgres-archiver"
+                                level: 2
                                 type: vmon-control
                                 status: unknown
-                                level: 2
+                                log: ["./vpostgres/archiver.log"]
                                 dp_service: ["vmware-vpostgres"]
-                                nameinlog: "vmware-postgres-archiver"
-                                log: [""]
-                                description: "VMware Postgres Archiver"
                                 sub_services:
                                   eam:
+                                    description: "VMware ESX Agent Manager"
                                     id: 13
+                                    nameinlog: "eam"
+                                    level: 2
                                     type: vmon-control
                                     status: unknown
-                                    level: 2
-                                    dp_service: []
-                                    nameinlog: "eam"
                                     log: ["./eam/eam.log"]
-                                    description: "VMware ESX Agent Manager"
+                                    dp_service: []
                                     sub_services:
                                       lookupsvc:
+                                        description: "VMware Lookup Service"
                                         id: 14
+                                        nameinlog: "lookupsvc"
+                                        level: 2
                                         type: vmon-control
                                         status: unknown
-                                        level: 2
+                                        log: ["./lookupservice/lookupservice.log"]
                                         dp_service: ["rhttpproxy", "vmware-vpostgres"]
-                                        nameinlog: "lookupsvc"
-                                        log: ["./lookupsvc/lookupserver-default.log"]
-                                        description: "VMware Lookup Service"
                                         sub_services:
                                           trustmanagement:
+                                            description: "VMware Trust Management Service"
                                             id: 15
+                                            nameinlog: "trustmanagement"
+                                            level: 2
                                             type: vmon-control
                                             status: unknown
-                                            level: 2
+                                            log: ["./trustmanagement/trustmanagement.log"]
                                             dp_service: ["lookupsvc"]
-                                            nameinlog: "trustmanagement"
-                                            log: ["./trustmanagement/trustmanagement-svcs.log"]
-                                            description: "VMware Trust Management Service"
                                             sub_services:
                                               vc-ws1a-broker:
+                                                description: "VMware Workspace ONE Access Broker"
                                                 id: 16
+                                                nameinlog: "vc-ws1a-broker"
+                                                level: 2
                                                 type: vmon-control
                                                 status: unknown
-                                                level: 2
+                                                log: ["./ws1a/broker.log"]
                                                 dp_service: ["rhttpproxy", "vmware-vmon", "vmware-vpostgres"]
-                                                nameinlog: "vc-ws1a-broker"
-                                                log: ["./vc-ws1a-broker/token-service.log"]
-                                                description: "VMware Workspace One Access (WS1A)"
                                                 sub_services:
                                                   sts:
+                                                    description: "VMware Security Token Service"
                                                     id: 17
+                                                    nameinlog: "sts"
+                                                    level: 2
                                                     type: vmon-control
                                                     status: unknown
-                                                    level: 2
+                                                    log: ["./sts/sts.log"]
                                                     dp_service: ["lookupsvc"]
-                                                    nameinlog: "sts"
-                                                    log: ["./sso/vmware-identity-sts.log"]
-                                                    description: "VMware Security Token Service"
                                                     sub_services:
                                                       vpxd:
+                                                        description: "VMware vCenter Server Service"
                                                         id: 18
+                                                        nameinlog: "vpxd"
+                                                        level: 2
                                                         type: vmon-control
                                                         status: unknown
-                                                        level: 2
-                                                        dp_service: ["lookupsvc", "sts", "vmware-vpostgres"]
-                                                        nameinlog: "vpxd"
                                                         log: ["./vpxd/vpxd.log"]
-                                                        description: "VMware vCenter Server"
+                                                        dp_service: ["lookupsvc", "sts", "vmware-vpostgres"]
                                                         sub_services:
                                                           sca:
+                                                            description: "VMware Service Control Agent"
                                                             id: 19
+                                                            nameinlog: "sca"
+                                                            level: 2
                                                             type: vmon-control
                                                             status: unknown
-                                                            level: 2
+                                                            log: ["./sca/sca.log"]
                                                             dp_service: ["lookupsvc", "rhttpproxy", "sts"]
-                                                            nameinlog: "sca"
-                                                            log: [""]
-                                                            description: "VMware Service Control Agent"
                                                             sub_services:
                                                               vlcm:
+                                                                description: "VMware vSphere Lifecycle Manager"
                                                                 id: 20
+                                                                nameinlog: "vlcm"
+                                                                level: 2
                                                                 type: vmon-control
                                                                 status: unknown
-                                                                level: 2
-                                                                dp_service: ["lookupsvc", "vmware-vpostgres", "vpxd"]
-                                                                nameinlog: "vlcm"
                                                                 log: ["./vlcm/vlcm.log"]
-                                                                description: "VMware vCenter Lifecycle API"
+                                                                dp_service: ["lookupsvc", "vmware-vpostgres", "vpxd"]
                                                                 sub_services:
                                                                   pschealth:
+                                                                    description: "VMware Platform Services Controller Health"
                                                                     id: 21
+                                                                    nameinlog: "pschealth"
+                                                                    level: 2
                                                                     type: vmon-control
                                                                     status: unknown
-                                                                    level: 2
+                                                                    log: ["./psc/health.log"]
                                                                     dp_service: ["vpxd"]
-                                                                    nameinlog: "pschealth"
-                                                                    log: [""]
-                                                                    description: "VMware Platform Services Controller Health Monitor"
                                                                     sub_services:
                                                                       cis-license:
+                                                                        description: "VMware License Service"
                                                                         id: 22
+                                                                        nameinlog: "cis-license"
+                                                                        level: 2
                                                                         type: vmon-control
                                                                         status: unknown
-                                                                        level: 2
+                                                                        log: ["./license/license.log"]
                                                                         dp_service: ["envoy", "lookupsvc", "sts"]
-                                                                        nameinlog: "cis-license"
-                                                                        log: ["./cis-license/license.log"]
-                                                                        description: "VMware License Service"
                                                                         sub_services:
                                                                           vapi-endpoint:
+                                                                            description: "VMware vSphere API Endpoint"
                                                                             id: 23
+                                                                            nameinlog: "vapi-endpoint"
+                                                                            level: 2
                                                                             type: vmon-control
                                                                             status: unknown
-                                                                            level: 2
+                                                                            log: ["./vapi/endpoint.log"]
                                                                             dp_service: ["envoy", "lookupsvc"]
-                                                                            nameinlog: "vapi-endpoint"
-                                                                            log: ["./vapi/endpoint/endpoint.log"]
-                                                                            description: "VMware vAPI Endpoint"
                                                                             sub_services:
                                                                               vsan-health:
+                                                                                description: "VMware vSAN Health Service"
                                                                                 id: 24
+                                                                                nameinlog: "vsan-health"
+                                                                                level: 2
                                                                                 type: vmon-control
                                                                                 status: unknown
-                                                                                level: 2
+                                                                                log: ["./vsan/health.log"]
                                                                                 dp_service: ["vmafdd", "vmware-vpostgres", "vpxd"]
-                                                                                nameinlog: "vsan-health"
-                                                                                log: ["./vsan-health/vmware-vsan-health-service.log"]
-                                                                                description: "VMware vSAN Health Service"
                                                                                 sub_services:
                                                                                   vsm:
+                                                                                    description: "VMware vService Manager"
                                                                                     id: 25
+                                                                                    nameinlog: "vsm"
+                                                                                    level: 2
                                                                                     type: vmon-control
                                                                                     status: unknown
-                                                                                    level: 2
-                                                                                    dp_service: ["vpxd"]
-                                                                                    nameinlog: "vsm"
                                                                                     log: ["./vsm/vsm.log"]
-                                                                                    description: "VMware vService Manager"
+                                                                                    dp_service: ["vpxd"]
                                                                                     sub_services:
                                                                                       vpxd-svcs:
+                                                                                        description: "VMware vCenter Server Services"
                                                                                         id: 26
+                                                                                        nameinlog: "vpxd-svcs"
+                                                                                        level: 2
                                                                                         type: vmon-control
                                                                                         status: unknown
-                                                                                        level: 2
+                                                                                        log: ["./vpxd/svcs.log"]
                                                                                         dp_service: ["lookupsvc", "sts", "vmware-vpostgres"]
-                                                                                        nameinlog: "vpxd-svcs"
-                                                                                        log: ["./vpxd-svcs/vpxd-svcs.log"]
-                                                                                        description: "VMware vCenter-Services"
                                                                                         sub_services:
                                                                                           sps:
+                                                                                            description: "VMware Storage Policy Service"
                                                                                             id: 27
+                                                                                            nameinlog: "sps"
+                                                                                            level: 2
                                                                                             type: vmon-control
                                                                                             status: unknown
-                                                                                            level: 2
+                                                                                            log: ["./sps/sps.log"]
                                                                                             dp_service: ["lookupsvc"]
-                                                                                            nameinlog: "sps"
-                                                                                            log: ["./vmware-sps/sps.log"]
-                                                                                            description: "VMware vSphere Profile-Driven Storage Service"
                                                                                             sub_services:
                                                                                               analytics:
+                                                                                                description: "VMware Analytics Service"
                                                                                                 id: 28
+                                                                                                nameinlog: "analytics"
+                                                                                                level: 2
                                                                                                 type: vmon-control
                                                                                                 status: unknown
-                                                                                                level: 2
-                                                                                                dp_service: ["envoy", "lookupsvc", "vmafdd", "vpxd"]
-                                                                                                nameinlog: "analytics"
                                                                                                 log: ["./analytics/analytics.log"]
-                                                                                                description: "VMware Analytics Service"
+                                                                                                dp_service: ["envoy", "lookupsvc", "vmafdd", "vpxd"]
                                                                                                 sub_services:
                                                                                                   vstats:
+                                                                                                    description: "VMware vSphere Stats Service"
                                                                                                     id: 29
+                                                                                                    nameinlog: "vstats"
+                                                                                                    level: 2
                                                                                                     type: vmon-control
                                                                                                     status: unknown
-                                                                                                    level: 2
+                                                                                                    log: ["./vstats/vstats.log"]
                                                                                                     dp_service: ["lookupsvc", "vmware-vpostgres", "vpxd", "vpxd-svcs", "vtsdb"]
-                                                                                                    nameinlog: "vstats"
-                                                                                                    log: ["./vstats/vstats-telemetry.log"]
-                                                                                                    description: "VMware vStats Service"
                                                                                                     sub_services:
                                                                                                       certificateauthority:
+                                                                                                        description: "VMware Certificate Authority"
                                                                                                         id: 30
+                                                                                                        nameinlog: "certificateauthority"
+                                                                                                        level: 2
                                                                                                         type: vmon-control
                                                                                                         status: unknown
-                                                                                                        level: 2
+                                                                                                        log: ["./ca/ca.log"]
                                                                                                         dp_service: ["lookupsvc", "sts", "vpxd-svcs"]
-                                                                                                        nameinlog: "certificateauthority"
-                                                                                                        log: ["./certificateauthority/certificateauthority-svcs.log"]
-                                                                                                        description: "VMware Certificate Authority Service"
                                                                                                         sub_services:
                                                                                                           observability-vapi:
+                                                                                                            description: "VMware Observability API"
                                                                                                             id: 31
+                                                                                                            nameinlog: "observability-vapi"
+                                                                                                            level: 2
                                                                                                             type: vmon-control
                                                                                                             status: unknown
-                                                                                                            level: 2
+                                                                                                            log: ["./observability/vapi.log"]
                                                                                                             dp_service: ["lookupsvc", "vpxd-svcs"]
-                                                                                                            nameinlog: "observability-vapi"
-                                                                                                            log: ["./observability/vapi/observability-vapi.log"]
-                                                                                                            description: "VMware VCSA Observability VAPI Service"
                                                                                                             sub_services:
                                                                                                               certificatemanagement:
+                                                                                                                description: "VMware Certificate Management"
                                                                                                                 id: 32
+                                                                                                                nameinlog: "certificatemanagement"
+                                                                                                                level: 2
                                                                                                                 type: vmon-control
                                                                                                                 status: unknown
-                                                                                                                level: 2
+                                                                                                                log: ["./certmgmt/certmgmt.log"]
                                                                                                                 dp_service: ["lookupsvc", "sts", "vpxd-svcs"]
-                                                                                                                nameinlog: "certificatemanagement"
-                                                                                                                log: ["./certificatemanagement/certificatemanagement-svcs.log"]
-                                                                                                                description: "VMware Certificate Manager"
                                                                                                                 sub_services:
                                                                                                                   topologysvc:
+                                                                                                                    description: "VMware Topology Service"
                                                                                                                     id: 33
+                                                                                                                    nameinlog: "topologysvc"
+                                                                                                                    level: 2
                                                                                                                     type: vmon-control
                                                                                                                     status: unknown
-                                                                                                                    level: 2
+                                                                                                                    log: ["./topology/topology.log"]
                                                                                                                     dp_service: ["lookupsvc", "sts", "vpxd-svcs"]
-                                                                                                                    nameinlog: "topologysvc"
-                                                                                                                    log: ["./topologysvc/topology-svcs.log"]
-                                                                                                                    description: "VMware Topology Service"
                                                                                                                     sub_services:
                                                                                                                       wcp:
+                                                                                                                        description: "VMware Workload Control Plane"
                                                                                                                         id: 34
+                                                                                                                        nameinlog: "wcp"
+                                                                                                                        level: 2
                                                                                                                         type: vmon-control
                                                                                                                         status: unknown
-                                                                                                                        level: 2
+                                                                                                                        log: ["./wcp/wcp.log"]
                                                                                                                         dp_service: ["cis-license", "eam", "envoy-sidecar", "lookupsvc", "sts", "trustmanagement", "vapi-endpoint", "vmware-vpostgres", "vpxd", "vpxd-svcs"]
-                                                                                                                        nameinlog: "wcp"
-                                                                                                                        log: ["./wcp/wcpsvc.log"]
-                                                                                                                        description: "Workload Control Plane"
                                                                                                                         sub_services:
                                                                                                                           applmgmt:
+                                                                                                                            description: "VMware Appliance Management Service"
                                                                                                                             id: 35
+                                                                                                                            nameinlog: "applmgmt"
+                                                                                                                            level: 2
                                                                                                                             type: vmon-control
                                                                                                                             status: unknown
-                                                                                                                            level: 2
-                                                                                                                            dp_service: ["lookupsvc", "statsmonitor", "vpxd-svcs"]
-                                                                                                                            nameinlog: "applmgmt"
                                                                                                                             log: ["./applmgmt/applmgmt.log"]
-                                                                                                                            description: "VMware Appliance Management Service"
+                                                                                                                            dp_service: ["lookupsvc", "statsmonitor", "vpxd-svcs"]
                                                                                                                             sub_services:
                                                                                                                               updatemgr:
+                                                                                                                                description: "VMware Update Manager"
                                                                                                                                 id: 36
+                                                                                                                                nameinlog: "updatemgr"
+                                                                                                                                level: 2
                                                                                                                                 type: vmon-control
                                                                                                                                 status: unknown
-                                                                                                                                level: 2
+                                                                                                                                log: ["./updatemgr/updatemgr.log"]
                                                                                                                                 dp_service: ["lookupsvc", "sts", "vpxd", "vpxd-svcs"]
-                                                                                                                                nameinlog: "updatemgr"
-                                                                                                                                log: ["./vmware-updatemgr/vum-server/vmware-vum-server.log"],
-                                                                                                                                description: "VMware Update Manager"
                                                                                                                                 sub_services:
                                                                                                                                   infraprofile:
+                                                                                                                                    description: "VMware Infrastructure Profile Service"
                                                                                                                                     id: 37
+                                                                                                                                    nameinlog: "infraprofile"
+                                                                                                                                    level: 2
                                                                                                                                     type: vmon-control
                                                                                                                                     status: unknown
-                                                                                                                                    level: 2
+                                                                                                                                    log: ["./infraprofile/infraprofile.log"]
                                                                                                                                     dp_service: ["lookupsvc", "vpxd-svcs"]
-                                                                                                                                    nameinlog: "infraprofile"
-                                                                                                                                    log: ["./infraprofile/infraprofile-svcs.log"]
-                                                                                                                                    description: "VMware Infraprofile Service"
                                                                                                                                     sub_services:
                                                                                                                                       hvc:
+                                                                                                                                        description: "VMware Hybrid Versioning Control"
                                                                                                                                         id: 38
+                                                                                                                                        nameinlog: "hvc"
+                                                                                                                                        level: 2
                                                                                                                                         type: vmon-control
                                                                                                                                         status: unknown
-                                                                                                                                        level: 2
+                                                                                                                                        log: ["./hvc/hvc.log"]
                                                                                                                                         dp_service: ["certificatemanagement", "lookupsvc", "sts", "trustmanagement", "vapi-endpoint", "vmonapi", "vmware-vpostgres", "vpxd-svcs"]
-                                                                                                                                        nameinlog: "hvc"
-                                                                                                                                        log: ["./hvc/hvc-svcs.log"]
-                                                                                                                                        description: "VMware Hybrid VC Service"
                                                                                                                                         sub_services:
                                                                                                                                           vsphere-ui:
+                                                                                                                                            description: "VMware vSphere Client"
                                                                                                                                             id: 39
+                                                                                                                                            nameinlog: "vsphere-ui"
+                                                                                                                                            level: 2
                                                                                                                                             type: vmon-control
                                                                                                                                             status: unknown
-                                                                                                                                            level: 2
+                                                                                                                                            log: ["./vsphere-ui/vsphere-ui.log"]
                                                                                                                                             dp_service: ["envoy", "lookupsvc", "rhttpproxy", "sts", "vapi-endpoint", "vpxd-svcs"]
-                                                                                                                                            nameinlog: "vsphere-ui"
-                                                                                                                                            log: ["./vsphere-ui/logs/vsphere_client_virgo.log"]
-                                                                                                                                            description: "VMware vSphere Client"
                                                                                                                                             sub_services:
                                                                                                                                               content-library:
+                                                                                                                                                description: "VMware Content Library Service"
                                                                                                                                                 id: 40
+                                                                                                                                                nameinlog: "content-library"
+                                                                                                                                                level: 2
                                                                                                                                                 type: vmon-control
                                                                                                                                                 status: unknown
-                                                                                                                                                level: 2
+                                                                                                                                                log: ["./content-library/content-library.log"]
                                                                                                                                                 dp_service: ["rhttpproxy", "sca", "vapi-endpoint", "vmware-vpostgres", "vpxd", "vpxd-svcs", "wcp"]
-                                                                                                                                                nameinlog: "content-library"
-                                                                                                                                                log: ["./content-library/cls.log"]
-                                                                                                                                                description: "VMware Content Library Service"
                                                                                                                                                 sub_services:
                                                                                                                                                   perfcharts:
+                                                                                                                                                    description: "VMware Performance Charts"
                                                                                                                                                     id: 41
+                                                                                                                                                    nameinlog: "perfcharts"
+                                                                                                                                                    level: 2
                                                                                                                                                     type: vmon-control
                                                                                                                                                     status: unknown
-                                                                                                                                                    level: 2
+                                                                                                                                                    log: ["./perfcharts/perfcharts.log"]
                                                                                                                                                     dp_service: ["sca", "vpxd", "vsphere-ui"]
-                                                                                                                                                    nameinlog: "perfcharts"
-                                                                                                                                                    log: ["./perfcharts/stats.log"]
-                                                                                                                                                    description: "VMware Performance Charts"
 
   # Level 3 系统服务
   observabobservability:
+    description: "VMware VCSA Observability Service"
     id: 42
+    nameinlog: "observabobservability"
+    level: 3
     type: system-control
     status: unknown
-    level: 3
-    dp_service: []
-    nameinlog: "observabobservability"
     log: ["./observability/observability.log"]
-    description: "VMware VCSA Observability Service"
+    dp_service: []
 
   vmware-vdtc:
+    description: "VMware vSphere Distributed Tracing Collector"
     id: 43
+    nameinlog: "vmware-vdtc"
+    level: 3
     type: system-control
     status: unknown
-    level: 3
-    dp_service: []
-    nameinlog: "vmware-vdtc"
     log: ["./vdtc/vdtc.log"]
-    description: "VMware vSphere Distrubuted Tracing Collector"
+    dp_service: []
 
   vmware-pod:
+    description: "VMware Patching and Host Management Service"
     id: 44
+    nameinlog: "vmware-pod"
+    level: 3
     type: system-control
     status: unknown
-    level: 3
-    dp_service: []
-    nameinlog: "vmware-pod"
     log: ["./pod/pod-service.log"]
-    description: "VMware Patching and Host Management Service" 
+    dp_service: [] 
