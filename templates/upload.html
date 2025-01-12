@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>vCenter vMon Service Checker</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .upload-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        h1 {
+            margin: 0 0 24px 0;
+            font-size: 24px;
+            color: #1a1f36;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 500;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #2d3748;
+            margin-bottom: 20px;
+            background-color: white;
+        }
+        .file-upload {
+            border: 2px dashed #e2e8f0;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .file-upload:hover {
+            border-color: #2196F3;
+            background-color: #f8fafc;
+        }
+        .file-upload input[type="file"] {
+            display: none;
+        }
+        .file-upload-text {
+            color: #4a5568;
+            font-size: 14px;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .submit-btn:hover {
+            background-color: #1976D2;
+        }
+        .submit-btn:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+        }
+        .selected-file {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #4a5568;
+        }
+        .error-message {
+            color: #F44336;
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            color: #4a5568;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .tab.active {
+            color: #2196F3;
+            border-bottom-color: #2196F3;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .url-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        
+        .instructions {
+            background: #EDF2F7;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #4A5568;
+            line-height: 1.6;
+        }
+        
+        .instructions h3 {
+            color: #2D3748;
+            margin: 0 0 8px 0;
+            font-size: 16px;
+        }
+        
+        .instructions code {
+            background: #E2E8F0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        .instructions ul {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin: 4px 0;
+        }
+        
+        .header-title {
+            display: flex;
+            align-items: center;
+        }
+        
+        .header-title h1 {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 24px;
+            margin: 0;
+        }
+        
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 12px 24px;
+            text-align: right;
+            font-size: 14px;
+            color: #4a5568;
+            border-top: 1px solid #e2e8f0;
+            z-index: 1000;
+        }
+        
+        .footer-right {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        
+        .footer-right a {
+            color: #2196F3;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .footer-right a:hover {
+            color: #1976D2;
+        }
+        
+        .divider {
+            color: #cbd5e0;
+        }
+        
+        .container {
+            padding-bottom: 60px;  /* 为页脚留出空间 */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="upload-container">
+            <div class="header-title">
+                <h1>vCenter vMon Service Checker</h1>
+            </div>
+            
+            <div class="instructions">
+                <h3>重要提示</h3>
+                <p>在获取日志之前，请按以下步骤操作：</p>
+                <ol>
+                    <li>通过 SSH 连接到 vCenter</li>
+                    <li>执行以下命令重启所有服务：</li>
+                    <code>service-control --stop --all && service-control --start --all</code>
+                    <li>等待服务启动失败后，日志文件将位于：</li>
+                    <code>/var/log/vmware/vmon/</code>
+                    <li>选择最新的 vmon.log 文件进行分析</li>
+                </ol>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" data-tab="file">本地文件上传</div>
+                <div class="tab" data-tab="url">远程日志获取</div>
+            </div>
+
+            <form id="uploadForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="version">vCenter Version</label>
+                    <select id="version" name="version" required>
+                        <option value="">Select Version</option>
+                        <option value="6.7">vCenter 6.7</option>
+                        <option value="7.0">vCenter 7.0</option>
+                        <option value="8.0">vCenter 8.0</option>
+                    </select>
+                </div>
+                
+                <div id="fileUpload" class="tab-content active">
+                    <div class="form-group">
+                        <label>vmon.log File</label>
+                        <div class="file-upload" id="dropZone">
+                            <input type="file" id="logFile" name="logFile" accept=".log">
+                            <p class="file-upload-text">Drag and drop vmon.log file here or click to select</p>
+                            <div class="selected-file" id="selectedFile"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="urlUpload" class="tab-content">
+                    <div class="form-group">
+                        <label>Remote Log URL</label>
+                        <input type="url" id="logUrl" name="logUrl" class="url-input" 
+                               placeholder="https://example.com/path/to/vmon.log">
+                    </div>
+                </div>
+
+                <div class="error-message" id="errorMessage"></div>
+                
+                <button type="submit" class="submit-btn" id="submitBtn" disabled>
+                    Analyze Log
+                </button>
+            </form>
+        </div>
+        
+        <footer class="footer">
+            <div class="footer-right">
+                <span>GSCN Team</span>
+                <span class="divider">|</span>
+                Bug Report: <a href="mailto:chang.wang@broadcom.com">chang.wang@broadcom.com</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('logFile');
+        const selectedFile = document.getElementById('selectedFile');
+        const submitBtn = document.getElementById('submitBtn');
+        const versionSelect = document.getElementById('version');
+        const errorMessage = document.getElementById('errorMessage');
+        const uploadForm = document.getElementById('uploadForm');
+
+        // 处理文件拖放
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#2196F3';
+        });
+
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#e2e8f0';
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#e2e8f0';
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        dropZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.name.endsWith('.log')) {
+                    selectedFile.textContent = file.name;
+                    errorMessage.style.display = 'none';
+                    validateForm();
+                } else {
+                    errorMessage.textContent = 'Please select a valid .log file';
+                    errorMessage.style.display = 'block';
+                    selectedFile.textContent = '';
+                    fileInput.value = '';
+                }
+            }
+        }
+
+        versionSelect.addEventListener('change', validateForm);
+
+        function validateForm() {
+            const activeTab = document.querySelector('.tab.active').dataset.tab;
+            if (activeTab === 'file') {
+                submitBtn.disabled = !logFile.files.length || !versionSelect.value;
+            } else {
+                submitBtn.disabled = !logUrl.value || !versionSelect.value;
+            }
+        }
+
+        // 添加标签切换功能
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const logFile = document.getElementById('logFile');
+        const logUrl = document.getElementById('logUrl');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // 移除所有活动状态
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                // 添加当前活动状态
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab + 'Upload').classList.add('active');
+                
+                // 重置表单验证
+                validateForm();
+            });
+        });
+        
+        // 监听 URL 输入
+        logUrl.addEventListener('input', validateForm);
+        
+        // 修改表单提交
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const activeTab = document.querySelector('.tab.active').dataset.tab;
+            const formData = new FormData();
+            
+            formData.append('version', versionSelect.value);
+            
+            if (activeTab === 'file') {
+                formData.append('logFile', logFile.files[0]);
+            } else {
+                formData.append('logUrl', logUrl.value);
+            }
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Analyzing...';
+            
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    window.location.href = '/services';
+                } else {
+                    throw new Error('Upload failed');
+                }
+            } catch (error) {
+                errorMessage.textContent = 'Upload failed. Please try again.';
+                errorMessage.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Analyze Log';
+            }
+        });
+    </script>
+</body>
+</html> 

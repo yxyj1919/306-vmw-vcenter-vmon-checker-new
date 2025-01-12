@@ -1,0 +1,312 @@
+{
+  "services": {
+    "lwsmd": {
+      "id": 1,
+      "type": "system-control",
+      "status": "running",
+      "level": 1,
+      "depends_on": []
+    },
+    "vmafdd": {
+      "id": 2,
+      "type": "system-control",
+      "status": "running",
+      "level": 1,
+      "depends_on": []
+    },
+    "vmdird": {
+      "id": 3,
+      "type": "system-control",
+      "status": "running",
+      "level": 1,
+      "depends_on": []
+    },
+    "vmcad": {
+      "id": 4,
+      "type": "system-control",
+      "status": "running",
+      "level": 1,
+      "depends_on": []
+    },
+    "vmware-vmon": {
+      "id": 5,
+      "type": "system-control",
+      "status": "running",
+      "level": 1,
+      "depends_on": []
+    },
+    "envoy": {
+      "id": 6,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": []
+    },
+    "envoy-sidecar": {
+      "id": 7,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": []
+    },
+    "envoy-hgw": {
+      "id": 8,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": []
+    },
+    "rhttpproxy": {
+      "id": 9,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["vmafdd"]
+    },
+    "vmware-vpostgres": {
+      "id": 10,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": []
+    },
+    "vtsdb": {
+      "id": 11,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["vmware-vpostgres"]
+    },
+    "vmware-postgres-archiver": {
+      "id": 12,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["vmware-vpostgres"]
+    },
+    "eam": {
+      "id": 13,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": []
+    },
+    "lookupsvc": {
+      "id": 14,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["rhttpproxy", "vmware-vpostgres"]
+    },
+    "trustmanagement": {
+      "id": 15,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["lookupsvc"]
+    },
+    "vc-ws1a-broker": {
+      "id": 16,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["rhttpproxy", "vmware-vmon", "vmware-vpostgres"]
+    },
+    "sts": {
+      "id": 17,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["lookupsvc"]
+    },
+    "vpxd": {
+      "id": 18,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["lookupsvc", "sts", "vmware-vpostgres"]
+    },
+    "sca": {
+      "id": 19,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["lookupsvc", "rhttpproxy", "sts"]
+    },
+    "vlcm": {
+      "id": 20,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["lookupsvc", "vmware-vpostgres", "vpxd"]
+    },
+    "pschealth": {
+      "id": 21,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["vpxd"]
+    },
+    "cis-license": {
+      "id": 22,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["envoy", "lookupsvc", "sts"]
+    },
+    "vapi-endpoint": {
+      "id": 23,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["envoy", "lookupsvc"]
+    },
+    "vsan-health": {
+      "id": 24,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["vmafdd", "vmware-vpostgres", "vpxd"]
+    },
+    "vsm": {
+      "id": 25,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["vpxd"]
+    },
+    "vpxd-svcs": {
+      "id": 26,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["lookupsvc", "sts", "vmware-vpostgres"]
+    },
+    "sps": {
+      "id": 27,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["lookupsvc"]
+    },
+    "analytics": {
+      "id": 28,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["envoy", "lookupsvc", "vmafdd", "vpxd"]
+    },
+    "vstats": {
+      "id": 29,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["lookupsvc", "vmware-vpostgres", "vpxd", "vpxd-svcs", "vtsdb"]
+    },
+    "certificateauthority": {
+      "id": 30,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["lookupsvc", "sts", "vpxd-svcs"]
+    },
+    "observability-vapi": {
+      "id": 31,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["lookupsvc", "vpxd-svcs"]
+    },
+    "certificatemanagement": {
+      "id": 32,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["lookupsvc", "sts", "vpxd-svcs"]
+    },
+    "topologysvc": {
+      "id": 33,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["lookupsvc", "sts", "vpxd-svcs"]
+    },
+    "wcp": {
+      "id": 34,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["cis-license", "eam", "envoy-sidecar", "lookupsvc", "sts", "trustmanagement", "vapi-endpoint", "vmware-vpostgres", "vpxd", "vpxd-svcs"]
+    },
+    "applmgmt": {
+      "id": 35,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["lookupsvc", "statsmonitor", "vpxd-svcs"]
+    },
+    "updatemgr": {
+      "id": 36,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["lookupsvc", "sts", "vpxd", "vpxd-svcs"]
+    },
+    "infraprofile": {
+      "id": 37,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["lookupsvc", "vpxd-svcs"]
+    },
+    "hvc": {
+      "id": 38,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["certificatemanagement", "lookupsvc", "sts", "trustmanagement", "vapi-endpoint", "vmonapi", "vmware-vpostgres", "vpxd-svcs"]
+    },
+    "vsphere-ui": {
+      "id": 39,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["envoy", "lookupsvc", "rhttpproxy", "sts", "vapi-endpoint", "vpxd-svcs"]
+    },
+    "content-library": {
+      "id": 40,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["rhttpproxy", "sca", "vapi-endpoint", "vmware-vpostgres", "vpxd", "vpxd-svcs", "wcp"]
+    },
+    "perfcharts": {
+      "id": 41,
+      "type": "vmon-control",
+      "status": "unknown",
+      "level": 2,
+      "depends_on": ["sca", "vpxd", "vsphere-ui"]
+    },
+    "observabobservability": {
+      "id": 42,
+      "type": "system-control",
+      "status": "unknown",
+      "level": 3,
+      "depends_on": []
+    },
+    "vmware-vdtc": {
+      "id": 43,
+      "type": "system-control",
+      "status": "unknown",
+      "level": 3,
+      "depends_on": []
+    },
+    "vmware-pod": {
+      "id": 44,
+      "type": "system-control",
+      "status": "unknown",
+      "level": 3,
+      "depends_on": []
+    }
+  }
+} 
