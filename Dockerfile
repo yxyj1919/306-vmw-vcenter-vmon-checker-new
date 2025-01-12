@@ -17,18 +17,17 @@ RUN apt-get update \
         python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# 复制项目文件
+# 复制依赖文件
 COPY requirements.txt .
-COPY app.py .
-COPY utils/ ./utils/
-COPY templates/ ./templates/
-COPY vmon-json-services/ ./vmon-json-services/
-
-# 创建上传目录
-RUN mkdir -p uploads && chmod 777 uploads
 
 # 安装 Python 依赖
 RUN pip install --no-cache-dir -r requirements.txt
+
+# 创建并设置上传目录
+RUN mkdir -p uploads && chmod 777 uploads
+
+# 复制应用文件
+COPY . .
 
 # 暴露端口
 EXPOSE 5000
