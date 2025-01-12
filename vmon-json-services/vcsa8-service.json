@@ -2,310 +2,398 @@
   "services": {
     "lwsmd": {
       "id": 1,
+      "fullname": "Likewise Service Manager",
       "type": "system-control",
       "status": "running",
       "level": 1,
+      "log": ["./likewise/likewise.log"],
       "depends_on": []
     },
     "vmafdd": {
       "id": 2,
+      "fullname": "VMware Authentication Framework",
       "type": "system-control",
       "status": "running",
       "level": 1,
-      "depends_on": []
+      "log": ["./vmafdd/vmafdd.log"],
+      "depends_on": [""]
     },
     "vmdird": {
       "id": 3,
+      "fullname": "VMware Directory Service",
       "type": "system-control",
       "status": "running",
       "level": 1,
+      "log": ["./vmdird/vmdird.log"],
       "depends_on": []
     },
     "vmcad": {
       "id": 4,
+      "fullname": "VMware Certificate Service",
       "type": "system-control",
       "status": "running",
       "level": 1,
+      "log": ["./vmcad/vmcad.log"],
       "depends_on": []
     },
     "vmware-vmon": {
       "id": 5,
+      "fullname": "VMware Service Lifecycle Manager",
       "type": "system-control",
       "status": "running",
       "level": 1,
+      "log": ["./vmon/vmon.log"],
       "depends_on": []
     },
     "envoy": {
       "id": 6,
+      "fullname": "VMware Envoy Proxy",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./envoy/envoy.log"],
       "depends_on": []
     },
     "envoy-sidecar": {
       "id": 7,
+      "fullname": "VMware Envoy Proxy Sidecar",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./envoy-sidecar/envoy.log"],
       "depends_on": []
     },
     "envoy-hgw": {
       "id": 8,
+      "fullname": "VMware Envoy Proxy HGW",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./envoy-hgw/envoy.log"],
       "depends_on": []
     },
     "rhttpproxy": {
       "id": 9,
+      "fullname": "VMware HTTP Reverse Proxy",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./rhttpproxy/rhttpproxy.log"],
       "depends_on": ["vmafdd"]
     },
     "vmware-vpostgres": {
       "id": 10,
+      "fullname": "VMware Postgres",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./vpostgres/postgresql.log"],
       "depends_on": []
     },
     "vtsdb": {
       "id": 11,
+      "fullname": "VMware vTsdb Service",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": [""],
       "depends_on": ["vmware-vpostgres"]
     },
     "vmware-postgres-archiver": {
       "id": 12,
+      "fullname": "VMware Postgres Archiver",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": [""],
       "depends_on": ["vmware-vpostgres"]
     },
     "eam": {
       "id": 13,
+      "fullname": "VMware ESX Agent Manager",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./eam/eam.log"],
       "depends_on": []
     },
     "lookupsvc": {
       "id": 14,
+      "fullname": "VMware Lookup Service",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./lookupsvc/lookupserver-default.log"],
       "depends_on": ["rhttpproxy", "vmware-vpostgres"]
     },
     "trustmanagement": {
       "id": 15,
+      "fullname": "VMware Trust Management Service",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./trustmanagement/trustmanagement-svcs.log"],
       "depends_on": ["lookupsvc"]
     },
     "vc-ws1a-broker": {
       "id": 16,
+      "fullname": "VMware Workspace One Access (WS1A)",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./vc-ws1a-broker/token-service.log"],
       "depends_on": ["rhttpproxy", "vmware-vmon", "vmware-vpostgres"]
     },
     "sts": {
       "id": 17,
+      "fullname": "VMware Security Token Service",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./sso/vmware-identity-sts.log"],
       "depends_on": ["lookupsvc"]
     },
     "vpxd": {
       "id": 18,
+      "fullname": "VMware vCenter Server",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./vpxd/vpxd.log"],
       "depends_on": ["lookupsvc", "sts", "vmware-vpostgres"]
     },
     "sca": {
       "id": 19,
+      "fullname": "VMware Service Control Agent",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": [""],
       "depends_on": ["lookupsvc", "rhttpproxy", "sts"]
     },
     "vlcm": {
       "id": 20,
+      "fullname": "VMware vCenter Lifecycle API",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./vlcm/vlcm.log"],
       "depends_on": ["lookupsvc", "vmware-vpostgres", "vpxd"]
     },
     "pschealth": {
       "id": 21,
+      "fullname": "VMware Platform Services Controller Health Monitor",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": [""],
       "depends_on": ["vpxd"]
     },
     "cis-license": {
       "id": 22,
+      "fullname": "VMware License Service",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./cis-license/license.log"],
       "depends_on": ["envoy", "lookupsvc", "sts"]
     },
     "vapi-endpoint": {
       "id": 23,
+      "fullname": "VMware vAPI Endpoint",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./vapi/endpoint/endpoint.log"],
       "depends_on": ["envoy", "lookupsvc"]
     },
     "vsan-health": {
       "id": 24,
+      "fullname": "VMware vSAN Health Service",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./vsan-health/vmware-vsan-health-service.log"],
       "depends_on": ["vmafdd", "vmware-vpostgres", "vpxd"]
     },
     "vsm": {
       "id": 25,
+      "fullname": "VMware vService Manager",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./vsm/vsm.log"],
       "depends_on": ["vpxd"]
     },
     "vpxd-svcs": {
       "id": 26,
+      "fullname": "VMware vCenter-Services",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./vpxd-svcs/vpxd-svcs.log"],
       "depends_on": ["lookupsvc", "sts", "vmware-vpostgres"]
     },
     "sps": {
       "id": 27,
+      "fullname": "VMware vSphere Profile-Driven Storage Service",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./vmware-sps/sps.log"],
       "depends_on": ["lookupsvc"]
     },
     "analytics": {
       "id": 28,
+      "fullname": "VMware Analytics Service",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./analytics/analytics.log"],
       "depends_on": ["envoy", "lookupsvc", "vmafdd", "vpxd"]
     },
     "vstats": {
       "id": 29,
+      "fullname": "VMware vStats Service",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./vstats/vstats-telemetry.log"],
       "depends_on": ["lookupsvc", "vmware-vpostgres", "vpxd", "vpxd-svcs", "vtsdb"]
     },
     "certificateauthority": {
       "id": 30,
+      "fullname": "VMware Certificate Authority Service",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./certificateauthority/certificateauthority-svcs.log"],
       "depends_on": ["lookupsvc", "sts", "vpxd-svcs"]
     },
     "observability-vapi": {
       "id": 31,
+      "fullname": "VMware VCSA Observability VAPI Service",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./observability/vapi/observability-vapi.log"],
       "depends_on": ["lookupsvc", "vpxd-svcs"]
     },
     "certificatemanagement": {
       "id": 32,
+      "fullname": "VMware Certificate Manager",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./certificatemanagement/certificatemanagement-svcs.log"],
       "depends_on": ["lookupsvc", "sts", "vpxd-svcs"]
     },
     "topologysvc": {
       "id": 33,
+      "fullname": "VMware Topology Service",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./topologysvc/topology-svcs.log"],
       "depends_on": ["lookupsvc", "sts", "vpxd-svcs"]
     },
     "wcp": {
       "id": 34,
+      "fullname": "Workload Control Plane",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./wcp/wcpsvc.log"],
       "depends_on": ["cis-license", "eam", "envoy-sidecar", "lookupsvc", "sts", "trustmanagement", "vapi-endpoint", "vmware-vpostgres", "vpxd", "vpxd-svcs"]
     },
     "applmgmt": {
       "id": 35,
+      "fullname": "VMware Appliance Management Service",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./applmgmt/applmgmt.log"],
       "depends_on": ["lookupsvc", "statsmonitor", "vpxd-svcs"]
     },
     "updatemgr": {
       "id": 36,
+      "fullname": "VMware Update Manager",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./vmware-updatemgr/vum-server/vmware-vum-server.log"],
       "depends_on": ["lookupsvc", "sts", "vpxd", "vpxd-svcs"]
     },
     "infraprofile": {
       "id": 37,
+      "fullname": "VMware Infraprofile Service",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./infraprofile/infraprofile-svcs.log"],
       "depends_on": ["lookupsvc", "vpxd-svcs"]
     },
     "hvc": {
       "id": 38,
+      "fullname": "VMware Hybrid VC Service",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./hvc/hvc-svcs.log"],
       "depends_on": ["certificatemanagement", "lookupsvc", "sts", "trustmanagement", "vapi-endpoint", "vmonapi", "vmware-vpostgres", "vpxd-svcs"]
     },
     "vsphere-ui": {
       "id": 39,
+      "fullname": "VMware vSphere Client",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./vsphere-ui/logs/vsphere_client_virgo.log"],
       "depends_on": ["envoy", "lookupsvc", "rhttpproxy", "sts", "vapi-endpoint", "vpxd-svcs"]
     },
     "content-library": {
       "id": 40,
+      "fullname": "VMware Content Library Service",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./content-library/cls.log"],
       "depends_on": ["rhttpproxy", "sca", "vapi-endpoint", "vmware-vpostgres", "vpxd", "vpxd-svcs", "wcp"]
     },
     "perfcharts": {
       "id": 41,
+      "fullname": "VMware Performance Charts",
       "type": "vmon-control",
       "status": "unknown",
       "level": 2,
+      "log": ["./perfcharts/stats.log"],
       "depends_on": ["sca", "vpxd", "vsphere-ui"]
     },
     "observabobservability": {
       "id": 42,
+      "fullname": "VMware VCSA Observability Service",
       "type": "system-control",
       "status": "unknown",
       "level": 3,
+      "log": ["./observability/observability.log"],
       "depends_on": []
     },
     "vmware-vdtc": {
       "id": 43,
+      "fullname": "VMware vSphere Distrubuted Tracing Collector",
       "type": "system-control",
       "status": "unknown",
       "level": 3,
+      "log": ["./vdtc/vdtc.log"],
       "depends_on": []
     },
     "vmware-pod": {
       "id": 44,
+      "fullname": "VMware Patching and Host Management Service",
       "type": "system-control",
       "status": "unknown",
       "level": 3,
+      "log": ["./pod/pod-service.log"],
       "depends_on": []
     }
   }
