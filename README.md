@@ -1,4 +1,4 @@
-<img width="1493" alt="image" src="https://github.com/user-attachments/assets/d21630e4-4ef3-47d7-806f-77bf57fe946d" /># vCenter vMon Service Checker
+# vCenter vMon Service Checker
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![vCenter](https://img.shields.io/badge/vCenter-8.0%20U3-green.svg)
