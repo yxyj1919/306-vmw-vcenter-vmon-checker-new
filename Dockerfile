@@ -7,10 +7,15 @@ WORKDIR /build
 # 安装构建依赖
 RUN apk add --no-cache \
     gcc \
+    g++ \
     musl-dev \
     python3-dev \
     libffi-dev \
     openssl-dev \
+    openblas-dev \
+    gfortran \
+    build-base \
+    linux-headers \
     cargo
 
 # 复制依赖文件
@@ -36,6 +41,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # 安装运行时依赖
 RUN apk add --no-cache \
     libstdc++ \
+    openblas \
     curl \
     && adduser -D appuser \
     && mkdir -p uploads \
