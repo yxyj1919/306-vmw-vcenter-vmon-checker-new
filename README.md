@@ -3,6 +3,8 @@
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![vCenter](https://img.shields.io/badge/vCenter-8.0%20U3-green.svg)
 ![Release Date](https://img.shields.io/badge/release-January%202025-orange.svg)
+![Docker Size](https://img.shields.io/badge/docker%20size-~200MB-brightgreen.svg)
+![Python](https://img.shields.io/badge/python-3.11-blue.svg)
 
 A web-based tool for checking and analyzing VMware vCenter vMon service status and dependencies.
 
