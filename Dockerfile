@@ -1,5 +1,27 @@
-# 使用 Python 3.11 作为基础镜像
-FROM python:3.11-slim
+# 构建阶段
+FROM python:3.11-alpine as builder
+
+# 设置工作目录
+WORKDIR /build
+
+# 安装构建依赖
+RUN apk add --no-cache \
+    gcc \
+    musl-dev \
+    python3-dev \
+    libffi-dev \
+    openssl-dev \
+    cargo
+
+# 复制依赖文件
+COPY requirements.txt .
+
+# 构建依赖
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip wheel --no-cache-dir --no-deps --wheel-dir /build/wheels -r requirements.txt
+
+# 运行阶段
+FROM python:3.11-alpine
 
 # 设置工作目录
 WORKDIR /app
@@ -11,27 +33,20 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     FLASK_ENV=production \
     PORT=5000
 
-# 安装系统依赖
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        gcc \
-        python3-dev \
-        curl \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
-
-# 复制依赖文件
-COPY requirements.txt .
-
-# 安装 Python 依赖
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
-
-# 创建非 root 用户
-RUN useradd -m -r appuser \
+# 安装运行时依赖
+RUN apk add --no-cache \
+    libstdc++ \
+    curl \
+    && adduser -D appuser \
     && mkdir -p uploads \
     && chown -R appuser:appuser /app \
     && chmod 777 uploads
+
+# 从构建阶段复制构建好的 wheels
+COPY --from=builder /build/wheels /wheels
+
+# 安装 Python 包
+RUN pip install --no-cache-dir /wheels/*
 
 # 切换到非 root 用户
 USER appuser
