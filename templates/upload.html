@@ -3,409 +3,398 @@
 <head>
     <title>vCenter vMon Service Checker</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #f5f7fa;
-            margin: 0;
-            padding: 20px;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-        .upload-container {
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 30px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-        }
-        h1 {
-            margin: 0 0 24px 0;
-            font-size: 24px;
-            color: #1a1f36;
-            text-align: center;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #4a5568;
-            font-weight: 500;
-        }
-        select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            font-size: 14px;
-            color: #2d3748;
-            margin-bottom: 20px;
-            background-color: white;
-        }
-        .file-upload {
-            border: 2px dashed #e2e8f0;
-            border-radius: 8px;
-            padding: 30px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .file-upload:hover {
-            border-color: #2196F3;
-            background-color: #f8fafc;
-        }
-        .file-upload input[type="file"] {
-            display: none;
-        }
-        .file-upload-text {
-            color: #4a5568;
-            font-size: 14px;
-        }
-        .submit-btn {
-            width: 100%;
-            padding: 12px;
-            background-color: #2196F3;
+        
+        .navbar {
+            background-color: #2c3e50;
             color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .navbar h1 {
+            font-size: 1.5rem;
             font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .submit-btn:hover {
-            background-color: #1976D2;
-        }
-        .submit-btn:disabled {
-            background-color: #94a3b8;
-            cursor: not-allowed;
-        }
-        .selected-file {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #4a5568;
-        }
-        .error-message {
-            color: #F44336;
-            font-size: 14px;
-            margin-top: 8px;
-            display: none;
-        }
-        .tabs {
-            display: flex;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            color: #4a5568;
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s;
-        }
-        
-        .tab.active {
-            color: #2196F3;
-            border-bottom-color: #2196F3;
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .url-input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            font-size: 14px;
-            color: #2d3748;
-            margin-bottom: 10px;
-        }
-        
-        .instructions {
-            background: #EDF2F7;
-            border-radius: 8px;
-            padding: 16px;
-            margin: 20px 0;
-            font-size: 14px;
-            color: #4A5568;
-            line-height: 1.6;
-        }
-        
-        .instructions h3 {
-            color: #2D3748;
-            margin: 0 0 8px 0;
-            font-size: 16px;
-        }
-        
-        .instructions code {
-            background: #E2E8F0;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-        }
-        
-        .instructions ul {
-            margin: 8px 0;
-            padding-left: 20px;
-        }
-        
-        .instructions li {
-            margin: 4px 0;
-        }
-        
-        .header-title {
-            display: flex;
-            align-items: center;
-        }
-        
-        .header-title h1 {
-            background: linear-gradient(45deg, #2196F3, #1976D2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 24px;
-            margin: 0;
-        }
-        
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            padding: 12px 24px;
-            text-align: right;
-            font-size: 14px;
-            color: #4a5568;
-            border-top: 1px solid #e2e8f0;
-            z-index: 1000;
-        }
-        
-        .footer-right {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 12px;
-        }
-        
-        .footer-right a {
-            color: #2196F3;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        
-        .footer-right a:hover {
-            color: #1976D2;
-        }
-        
-        .divider {
-            color: #cbd5e0;
         }
         
         .container {
-            padding-bottom: 60px;  /* 为页脚留出空间 */
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .upload-section {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .upload-section.drag-over {
+            border-color: #3498db;
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+        
+        .version-select {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        
+        .version-select select {
+            width: 100%;
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+        
+        .upload-methods {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .method-tab {
+            flex: 1;
+            padding: 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .method-tab.active {
+            border-bottom-color: #3498db;
+            color: #3498db;
+        }
+        
+        .upload-content {
+            margin-top: 1.5rem;
+        }
+        
+        .remote-url {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: white;
+            background-color: #3498db;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .upload-icon {
+            font-size: 1.2rem;
+            color: #3498db;
+        }
+        
+        .upload-text {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .instruction-panel {
+            background-color: #f8fafc;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            width: 100%;
+        }
+        
+        .instruction-panel h2 {
+            color: #1e293b;
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        
+        .toggle-btn {
+            padding: 4px 8px;
+            font-size: 0.9rem;
+            background: #e2e8f0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .step-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+        
+        .step {
+            background-color: white;
+            border-radius: 6px;
+            padding: 16px;
+            border: 1px solid #e2e8f0;
+            width: 100%;
+        }
+        
+        .step h3 {
+            color: #334155;
+            font-size: 1rem;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        
+        .command {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin: 8px 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-x: auto;
+            max-width: 100%;
+        }
+        
+        .upload-flex {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 12px;
+            min-height: 60px;
+        }
+        
+        .inline-form {
+            display: inline;
+        }
+        
+        .btn-link {
+            background: none;
+            border: none;
+            color: #3498db;
+            padding: 0;
+            font: inherit;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        .file-hint {
+            color: #999;
+            font-size: 0.8rem;
+        }
+        
+        .command-note {
+            color: #666;
+            font-size: 0.8rem;
+            margin-top: 8px;
+            display: block;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
+    <div class="navbar">
+        <h1>vCenter vMon Service Checker</h1>
+    </div>
+    
     <div class="container">
-        <div class="upload-container">
-            <div class="header-title">
-                <h1>vCenter vMon Service Checker</h1>
-            </div>
-            
-            <div class="instructions">
-                <h3>重要提示</h3>
-                <p>在获取日志之前，请按以下步骤操作：</p>
-                <ol>
-                    <li>通过 SSH 连接到 vCenter</li>
-                    <li>执行以下命令重启所有服务：</li>
-                    <code>service-control --stop --all && service-control --start --all</code>
-                    <li>等待服务启动失败后，日志文件将位于：</li>
-                    <code>/var/log/vmware/vmon/</code>
-                    <li>选择最新的 vmon.log 文件进行分析</li>
-                </ol>
-            </div>
-
-            <div class="tabs">
-                <div class="tab active" data-tab="file">本地文件上传</div>
-                <div class="tab" data-tab="url">远程日志获取</div>
-            </div>
-
-            <form id="uploadForm" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="version">vCenter Version</label>
-                    <select id="version" name="version" required>
-                        <option value="">Select Version</option>
-                        <option value="6.7">vCenter 6.7</option>
-                        <option value="7.0">vCenter 7.0</option>
-                        <option value="8.0">vCenter 8.0</option>
-                    </select>
-                </div>
-                
-                <div id="fileUpload" class="tab-content active">
-                    <div class="form-group">
-                        <label>vmon.log File</label>
-                        <div class="file-upload" id="dropZone">
-                            <input type="file" id="logFile" name="logFile" accept=".log">
-                            <p class="file-upload-text">Drag and drop vmon.log file here or click to select</p>
-                            <div class="selected-file" id="selectedFile"></div>
-                        </div>
+        <h1>vCenter vMon Service Checker</h1>
+        
+        <div class="instruction-panel">
+            <h2>使用前准备工作</h2>
+            <div class="steps" id="instruction-steps">
+                <div class="step-grid">
+                    <div class="step">
+                        <h3>1. SSH登录 vCenter</h3>
+                        <pre class="command">ssh root@vcenter-ip</pre>
+                    </div>
+                    
+                    <div class="step">
+                        <h3>2. 重启所有服务</h3>
+                        <pre class="command">service-control --stop --all && service-control --start --all</pre>
+                    </div>
+                    
+                    <div class="step">
+                        <h3>3. 获取日志文件</h3>
+                        <pre class="command">cp /var/log/vmware/vmon/vmon.log /tmp/ && cd /tmp/ && tar -czf vmon-logs.tar.gz vmon.log</pre>
+                        <small class="command-note">* 将生成的 vmon-logs.tar.gz 下载到本地后上传</small>
                     </div>
                 </div>
-                
-                <div id="urlUpload" class="tab-content">
-                    <div class="form-group">
-                        <label>Remote Log URL</label>
-                        <input type="url" id="logUrl" name="logUrl" class="url-input" 
-                               placeholder="https://example.com/path/to/vmon.log">
+            </div>
+        </div>
+
+        <div class="version-select">
+            <h3>选择vCenter版本</h3>
+            <select id="vcenter-version" name="version">
+                <option value="7.0">vCenter 7.0</option>
+                <option value="8.0U1">vCenter 8.0 U1</option>
+                <option value="8.0U2">vCenter 8.0 U2</option>
+                <option value="8.0U3" selected>vCenter 8.0 U3</option>
+            </select>
+        </div>
+        
+        <div class="upload-methods">
+            <div class="method-tab active" onclick="switchMethod('local')">本地上传</div>
+            <div class="method-tab" onclick="switchMethod('remote')">远程下载</div>
+        </div>
+        
+        <div id="local-upload" class="upload-content">
+            <div class="upload-section" id="drop-zone">
+                <div class="upload-flex">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">
+                        拖拽文件到此处或
+                        <form id="upload-form" action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data" class="inline-form">
+                            <input type="hidden" name="version" id="version-input">
+                            <input type="file" name="file" id="file-input" class="file-input" accept=".log">
+                            <button type="button" class="btn-link" onclick="document.getElementById('file-input').click()">选择文件</button>
+                        </form>
+                        <small class="file-hint">(支持.log文件)</small>
                     </div>
                 </div>
-
-                <div class="error-message" id="errorMessage"></div>
-                
-                <button type="submit" class="submit-btn" id="submitBtn" disabled>
-                    Analyze Log
-                </button>
+            </div>
+        </div>
+        
+        <div id="remote-upload" class="upload-content" style="display: none;">
+            <form id="remote-form" action="{{ url_for('download_file') }}" method="post">
+                <input type="hidden" name="version" id="remote-version-input">
+                <input type="text" name="url" class="remote-url" placeholder="输入远程文件URL" required>
+                <button type="submit" class="btn">下载并分析</button>
             </form>
         </div>
         
-        <footer class="footer">
-            <div class="footer-right">
-                <span>GSCN Team</span>
-                <span class="divider">|</span>
-                Bug Report: <a href="mailto:chang.wang@broadcom.com">chang.wang@broadcom.com</a>
-            </div>
-        </footer>
+        <div class="error-message" id="error-message"></div>
     </div>
 
     <script>
-        const dropZone = document.getElementById('dropZone');
-        const fileInput = document.getElementById('logFile');
-        const selectedFile = document.getElementById('selectedFile');
-        const submitBtn = document.getElementById('submitBtn');
-        const versionSelect = document.getElementById('version');
-        const errorMessage = document.getElementById('errorMessage');
-        const uploadForm = document.getElementById('uploadForm');
-
-        // 处理文件拖放
+        // 版本选择处理
+        const versionSelect = document.getElementById('vcenter-version');
+        const versionInput = document.getElementById('version-input');
+        const remoteVersionInput = document.getElementById('remote-version-input');
+        
+        // 设置默认版本为8.0U3
+        versionSelect.value = '8.0U3';
+        versionInput.value = '8.0U3';
+        remoteVersionInput.value = '8.0U3';
+        
+        versionSelect.addEventListener('change', function() {
+            versionInput.value = this.value;
+            remoteVersionInput.value = this.value;
+        });
+        
+        // 切换上传方式
+        function switchMethod(method) {
+            const localUpload = document.getElementById('local-upload');
+            const remoteUpload = document.getElementById('remote-upload');
+            const tabs = document.querySelectorAll('.method-tab');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            if (method === 'local') {
+                localUpload.style.display = 'block';
+                remoteUpload.style.display = 'none';
+                tabs[0].classList.add('active');
+            } else {
+                localUpload.style.display = 'none';
+                remoteUpload.style.display = 'block';
+                tabs[1].classList.add('active');
+            }
+        }
+        
+        // 文件拖放处理
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const uploadForm = document.getElementById('upload-form');
+        const errorMessage = document.getElementById('error-message');
+        
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
-            dropZone.style.borderColor = '#2196F3';
+            dropZone.classList.add('drag-over');
         });
-
+        
         dropZone.addEventListener('dragleave', (e) => {
             e.preventDefault();
-            dropZone.style.borderColor = '#e2e8f0';
+            dropZone.classList.remove('drag-over');
         });
-
+        
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
-            dropZone.style.borderColor = '#e2e8f0';
+            dropZone.classList.remove('drag-over');
+            
             const files = e.dataTransfer.files;
-            handleFiles(files);
-        });
-
-        dropZone.addEventListener('click', () => {
-            fileInput.click();
-        });
-
-        fileInput.addEventListener('change', (e) => {
-            handleFiles(e.target.files);
-        });
-
-        function handleFiles(files) {
             if (files.length > 0) {
                 const file = files[0];
-                if (file.name.endsWith('.log')) {
-                    selectedFile.textContent = file.name;
-                    errorMessage.style.display = 'none';
-                    validateForm();
+                if (file.name.toLowerCase().endsWith('.log')) {
+                    fileInput.files = files;
+                    uploadForm.submit();
                 } else {
-                    errorMessage.textContent = 'Please select a valid .log file';
-                    errorMessage.style.display = 'block';
-                    selectedFile.textContent = '';
-                    fileInput.value = '';
+                    showError('请上传.log文件');
                 }
             }
-        }
-
-        versionSelect.addEventListener('change', validateForm);
-
-        function validateForm() {
-            const activeTab = document.querySelector('.tab.active').dataset.tab;
-            if (activeTab === 'file') {
-                submitBtn.disabled = !logFile.files.length || !versionSelect.value;
-            } else {
-                submitBtn.disabled = !logUrl.value || !versionSelect.value;
-            }
-        }
-
-        // 添加标签切换功能
-        const tabs = document.querySelectorAll('.tab');
-        const tabContents = document.querySelectorAll('.tab-content');
-        const logFile = document.getElementById('logFile');
-        const logUrl = document.getElementById('logUrl');
-        
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                // 移除所有活动状态
-                tabs.forEach(t => t.classList.remove('active'));
-                tabContents.forEach(c => c.classList.remove('active'));
-                
-                // 添加当前活动状态
-                tab.classList.add('active');
-                document.getElementById(tab.dataset.tab + 'Upload').classList.add('active');
-                
-                // 重置表单验证
-                validateForm();
-            });
         });
         
-        // 监听 URL 输入
-        logUrl.addEventListener('input', validateForm);
-        
-        // 修改表单提交
-        uploadForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const activeTab = document.querySelector('.tab.active').dataset.tab;
-            const formData = new FormData();
-            
-            formData.append('version', versionSelect.value);
-            
-            if (activeTab === 'file') {
-                formData.append('logFile', logFile.files[0]);
-            } else {
-                formData.append('logUrl', logUrl.value);
-            }
-            
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Analyzing...';
-            
-            try {
-                const response = await fetch('/upload', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                if (response.ok) {
-                    window.location.href = '/services';
-                } else {
-                    throw new Error('Upload failed');
-                }
-            } catch (error) {
-                errorMessage.textContent = 'Upload failed. Please try again.';
-                errorMessage.style.display = 'block';
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Analyze Log';
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                uploadForm.submit();
             }
         });
+        
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 3000);
+        }
+        
+        function toggleInstructions() {
+            const steps = document.getElementById('instruction-steps');
+            steps.style.display = steps.style.display === 'none' ? 'block' : 'none';
+        }
     </script>
 </body>
 </html> 

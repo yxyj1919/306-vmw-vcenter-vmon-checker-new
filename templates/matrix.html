@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>vCenter vMon Service Checker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f0f2f5;
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            justify-content: space-between;
+            z-index: 1000;
+        }
+        
+        .navbar-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-buttons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+        }
+
+        .btn-primary {
+            background-color: #4f46e5;
+        }
+
+        .btn-primary:hover {
+            background-color: #4338ca;
+        }
+
+        .btn-secondary {
+            background-color: #10b981;
+        }
+
+        .btn-secondary:hover {
+            background-color: #059669;
+        }
+
+        .matrix-container {
+            margin-top: 88px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .matrix-row {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .matrix-row:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .matrix-cell {
+            width: 180px;
+            height: 90px;
+            background-color: white;
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .matrix-cell:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+        }
+
+        .matrix-cell.dimmed {
+            opacity: 0.2;
+            filter: grayscale(90%);
+        }
+
+        .matrix-cell.highlight-depends-on,
+        .matrix-cell.highlight-depended-by,
+        .matrix-cell.selected-service {
+            opacity: 1;
+            filter: none;
+        }
+
+        .service-name {
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 12px;
+            color: #374151;
+            line-height: 1.4;
+            word-wrap: break-word;
+            max-width: 100%;
+        }
+
+        .service-status {
+            padding: 5px 10px;
+            border-radius: 6px;
+            color: white;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .empty-cell {
+            background-color: #f9fafb;
+            border: 2px dashed #e5e7eb;
+            cursor: default;
+        }
+        
+        .legend {
+            position: fixed;
+            bottom: 32px;
+            left: 32px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            z-index: 1000;
+        }
+        
+        .legend-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+            letter-spacing: -0.3px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 12px 0;
+        }
+        
+        .legend-color {
+            width: 28px;
+            height: 28px;
+            margin-right: 16px;
+            border-radius: 8px;
+            border-width: 3px !important;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .legend-text {
+            font-size: 13px;
+            color: #4b5563;
+            font-weight: 500;
+        }
+
+        .highlight-depends-on {
+            box-shadow: 0 0 25px rgba(255,64,129,0.2);
+            border: 3px solid #FF4081;
+            transform: scale(1.05);
+        }
+
+        .highlight-depended-by {
+            box-shadow: 0 0 25px rgba(124,77,255,0.2);
+            border: 3px solid #7C4DFF;
+            transform: scale(1.05);
+        }
+
+        .selected-service {
+            box-shadow: 0 0 30px rgba(0,188,212,0.25);
+            border: 3px solid #00BCD4;
+            transform: scale(1.15);
+        }
+
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border-radius: 16px;
+            padding: 28px;
+            max-width: 560px;
+            width: 90%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            z-index: 2000;
+        }
+
+        .modal.show {
+            display: block;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            letter-spacing: -0.5px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6b7280;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: #1a1a1a;
+            background-color: #f3f4f6;
+        }
+
+        .modal-body {
+            color: #4b5563;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .service-info {
+            margin-bottom: 24px;
+        }
+
+        .service-info-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+            font-size: 15px;
+        }
+
+        .service-info-content {
+            line-height: 1.6;
+            color: #4b5563;
+        }
+
+        .service-logs {
+            background-color: #f8fafc;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #334155;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>vCenter vMon Service Checker</h1>
+        <div class="navbar-buttons">
+            <a href="{{ url_for('upload_page') }}" class="btn btn-primary">返回首页</a>
+        </div>
+    </nav>
+    
+    <!-- 添加图例 -->
+    <div class="legend">
+        <div class="legend-title">依赖关系图例</div>
+        <div class="legend-item">
+            <div class="legend-color" style="border: 2px solid #00BCD4; box-shadow: 0 0 10px rgba(0,188,212,0.4);"></div>
+            <span class="legend-text">选中的服务</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="border: 2px solid #FF4081; box-shadow: 0 0 10px rgba(255,64,129,0.4);"></div>
+            <span class="legend-text">该服务依赖的服务</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="border: 2px solid #7C4DFF; box-shadow: 0 0 10px rgba(124,77,255,0.4);"></div>
+            <span class="legend-text">依赖该服务的服务</span>
+        </div>
+    </div>
+
+    <div class="matrix-container" id="matrix">
+        <!-- 矩阵将通过JavaScript动态生成 -->
+    </div>
+
+    <!-- 添加弹窗HTML -->
+    <div class="modal" id="serviceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title"></div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="service-info">
+                    <div class="service-info-title">服务描述</div>
+                    <div class="service-info-content service-description"></div>
+                </div>
+                <div class="service-info">
+                    <div class="service-info-title">日志路径</div>
+                    <div class="service-logs service-log-paths"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let matrixData = null;
+        const modal = document.getElementById('serviceModal');
+        
+        let selectedServiceId = null;
+        let isHighlighted = false;
+        
+        // 关闭弹窗
+        function closeModal() {
+            modal.classList.remove('show');
+        }
+        
+        // 显示服务详情弹窗
+        function showServiceDetails(serviceId) {
+            // 从 matrixData 中查找对应的服务对象
+            const service = matrixData.matrix.flat().find(cell => cell && cell.name === serviceId);
+            if (!service) {
+                console.error('未找到服务信息:', serviceId);
+                return;
+            }
+
+            const modalTitle = modal.querySelector('.modal-title');
+            const description = modal.querySelector('.service-description');
+            const logPaths = modal.querySelector('.service-log-paths');
+            
+            modalTitle.textContent = `${service.id} - ${service.label}`;
+            description.textContent = service.description || '暂无描述';
+            logPaths.textContent = Array.isArray(service.log) ? service.log.join('\n') : '暂无日志路径';
+            
+            modal.classList.add('show');
+        }
+        
+        // 点击弹窗外部关闭弹窗
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+        
+        // 点击关闭按钮只关闭弹窗，不清除高亮
+        modal.querySelector('.modal-close').addEventListener('click', (event) => {
+            event.stopPropagation();
+            closeModal();
+        });
+        
+        // 点击弹窗内容时阻止事件冒泡
+        modal.querySelector('.modal-content').addEventListener('click', (event) => {
+            event.stopPropagation();
+        });
+        
+        function clearHighlights() {
+            document.querySelectorAll('.matrix-cell').forEach(cell => {
+                cell.classList.remove('highlight-depends-on', 'highlight-depended-by', 'selected-service', 'dimmed');
+            });
+            isHighlighted = false;
+            selectedServiceId = null;
+        }
+        
+        // 点击空白区域清除高亮
+        document.addEventListener('click', (event) => {
+            // 如果点击的不是服务单元格、图例或导航栏，则清除高亮
+            if (!event.target.closest('.matrix-cell') && 
+                !event.target.closest('.legend') && 
+                !event.target.closest('.navbar') &&
+                !event.target.closest('.modal')) {
+                clearHighlights();
+                closeModal();
+            }
+        });
+
+        function highlightDependencies(serviceId) {
+            // 清除之前的高亮
+            clearHighlights();
+            
+            // 获取服务信息
+            const service = matrixData.matrix.flat().find(cell => cell && cell.name === serviceId);
+            if (!service) {
+                console.log('未找到服务信息:', serviceId);
+                return;
+            }
+            
+            // 获取依赖关系信息
+            const dependencies = matrixData.dependencies[serviceId];
+            if (!dependencies) {
+                console.log('未找到依赖关系信息:', serviceId);
+                return;
+            }
+            
+            // 高亮当前服务
+            const selectedCell = document.querySelector(`.matrix-cell[data-service-id="${serviceId}"]`);
+            if (selectedCell) {
+                selectedCell.classList.add('selected-service');
+            }
+            
+            // 高亮依赖的服务（该服务依赖的其他服务）
+            dependencies.depends_on.forEach(depServiceId => {
+                const depCell = document.querySelector(`.matrix-cell[data-service-id="${depServiceId}"]`);
+                if (depCell) {
+                    depCell.classList.add('highlight-depends-on');
+                }
+            });
+            
+            // 高亮被依赖的服务（依赖该服务的其他服务）
+            dependencies.depended_by.forEach(depServiceId => {
+                const depCell = document.querySelector(`.matrix-cell[data-service-id="${depServiceId}"]`);
+                if (depCell) {
+                    depCell.classList.add('highlight-depended-by');
+                }
+            });
+            
+            // 将其他服务设置为暗淡
+            document.querySelectorAll('.matrix-cell').forEach(cell => {
+                if (!cell.classList.contains('selected-service') && 
+                    !cell.classList.contains('highlight-depends-on') && 
+                    !cell.classList.contains('highlight-depended-by')) {
+                    cell.classList.add('dimmed');
+                }
+            });
+        }
+
+        function createMatrix() {
+            fetch('/api/services/matrix')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    matrixData = data;  // 存储完整的矩阵数据，包括依赖关系
+                    const matrix = data.matrix;
+                    
+                    if (!Array.isArray(matrix)) {
+                        throw new Error('矩阵数据格式不正确');
+                    }
+                    
+                    const container = document.querySelector('.matrix-container');
+                    container.innerHTML = '';  // 清空容器
+                    
+                    matrix.forEach((row, rowIndex) => {
+                        const rowDiv = document.createElement('div');
+                        rowDiv.className = 'matrix-row';
+                        
+                        row.forEach((cell, colIndex) => {
+                            const cellDiv = document.createElement('div');
+                            cellDiv.className = 'matrix-cell';
+                            
+                            if (cell) {
+                                cellDiv.style.backgroundColor = cell.color;
+                                cellDiv.dataset.serviceId = cell.name;  // 使用服务名称作为ID
+                                
+                                const nameDiv = document.createElement('div');
+                                nameDiv.className = 'service-name';
+                                nameDiv.textContent = `${cell.id} - ${cell.label}`;
+                                
+                                const statusDiv = document.createElement('div');
+                                statusDiv.className = 'service-status';
+                                statusDiv.textContent = cell.status;
+                                
+                                cellDiv.appendChild(nameDiv);
+                                cellDiv.appendChild(statusDiv);
+                                
+                                // 添加点击事件
+                                cellDiv.addEventListener('click', function(event) {
+                                    event.stopPropagation();  // 阻止事件冒泡
+                                    const serviceId = this.dataset.serviceId;
+                                    if (serviceId) {
+                                        if (this.classList.contains('selected-service')) {
+                                            // 如果已经选中，则显示服务详情
+                                            showServiceDetails(serviceId);
+                                        } else {
+                                            // 否则高亮依赖关系
+                                            highlightDependencies(serviceId);
+                                        }
+                                    }
+                                });
+                            } else {
+                                cellDiv.classList.add('empty');
+                            }
+                            
+                            rowDiv.appendChild(cellDiv);
+                        });
+                        
+                        container.appendChild(rowDiv);
+                    });
+                })
+                .catch(error => {
+                    console.error('获取矩阵数据失败:', error);
+                    const container = document.querySelector('.matrix-container');
+                    container.innerHTML = `<div class="error-message">加载服务矩阵失败: ${error.message}</div>`;
+                });
+        }
+
+        // 页面加载时创建矩阵
+        document.addEventListener('DOMContentLoaded', createMatrix);
+
+        function showServiceInfo(event, service) {
+            if (!service) return;
+            
+            const popup = document.createElement('div');
+            popup.className = 'popup';
+            
+            // 计算弹窗位置，确保不会超出视窗
+            const rect = event.target.getBoundingClientRect();
+            const x = rect.right + 10;
+            const y = rect.top;
+            
+            popup.style.left = `${x}px`;
+            popup.style.top = `${y}px`;
+            
+            // 构建弹窗内容
+            popup.innerHTML = `
+                <h3>${service.label}</h3>
+                <p>状态: ${service.status}</p>
+                <p class="description">描述: ${service.description || '无描述'}</p>
+                <p class="log-paths">日志路径: ${service.log.join(', ') || '无日志路径'}</p>
+            `;
+            
+            document.body.appendChild(popup);
+            
+            // 移除之前的弹窗
+            const existingPopup = document.querySelector('.popup');
+            if (existingPopup && existingPopup !== popup) {
+                existingPopup.remove();
+            }
+        }
+
+        function hideServiceInfo() {
+            const popup = document.querySelector('.popup');
+            if (popup) {
+                popup.remove();
+            }
+        }
+    </script>
+</body>
+</html> 

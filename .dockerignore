@@ -1,3 +1,7 @@
+# Git
+.git
+.gitignore
+
 # Python
 __pycache__/
 *.py[cod]
@@ -19,13 +23,10 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
-
-# 虚拟环境
+.env
+.venv
 venv/
 ENV/
-
-# 上传的文件
-uploads/
 
 # IDE
 .idea/
@@ -33,9 +34,10 @@ uploads/
 *.swp
 *.swo
 
+# 上传的文件
+uploads/*
+*.log
+
 # 系统文件
 .DS_Store
 Thumbs.db 
-
-# 上传的日志文件
-*.log 
