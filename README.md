@@ -105,9 +105,7 @@ http://IP:5000
 
 ## Bug Report & Support
 
-If you encounter any issues or have suggestions, please feel free to:
-- Email: chang.wang@broadcom.com
-- GitHub: [https://github.com/yxyj1919/306-vmw-vcenter-vmon-checker-new](https://github.com/yxyj1919/306-vmw-vcenter-vmon-checker-new)
+If you encounter any issues or have suggestions, please feel free to let me know.
 
 ## License
 
