@@ -33,5 +33,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 暴露端口
 EXPOSE 5000
 
-# 启动命令
-CMD ["python", "app.py"] 
+# 修改启动命令，确保监听所有网络接口
+CMD ["python", "-c", "from app import app; app.run(host='0.0.0.0', port=5000, debug=True)"] 
